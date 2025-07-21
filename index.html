@@ -77,6 +77,24 @@
       padding: 2rem 1rem;
     }
 
+    .textured {
+      background-image: url('/images/cracked-texture.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: #f0ece6;
+    }
+
+    footer p {
+      font-size: 0.9rem;
+      color: #777;
+    }
+
     @media (max-width: 768px) {
       h1, .section-title {
         font-size: 2rem;
@@ -87,7 +105,7 @@
 <body>
 
   <header>
-    <img src="images/hero-vase.png" alt="Cracked vase with lily" />
+    <img src="/images/hero-vase.png" alt="Reconstructed vase with lily" class="hero" />
     <h1>Is This All There Is?</h1>
   </header>
 
@@ -98,7 +116,7 @@
     </div>
   </section>
 
-  <section class="highlight">
+  <section class="highlight textured">
     <h2 class="section-title">That Quiet Ache</h2>
     <div class="content-block">
       <p>You’ve done so much, and you’re proud of it. But underneath the full calendar and outward appearance, something feels off. You wonder, <em>Is this it?</em> The “more” you’re searching for might not require changing your circumstances — just your perspective.</p>
@@ -168,6 +186,11 @@
     <h2 class="section-title">Let’s Begin</h2>
     <a href="#schedule" class="cta-button">Schedule Your Free Clarity Call Today</a>
   </section>
+
+  <footer>
+    <img src="/images/logo-tagline.png" alt="The Reconstructionists - Rebuilding Lives" style="max-width: 280px; height: auto;" />
+    <p>© 2025 The Reconstructionists</p>
+  </footer>
 
 </body>
 </html>
