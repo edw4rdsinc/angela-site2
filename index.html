@@ -97,15 +97,57 @@
         font-size: 2rem;
       }
     }
+    #hero {
+    padding: 4rem 1rem;
+    text-align: center;
+    background-color: #F5F1E7; /* Restoration White background for contrast */
+  }
+
+  #hero h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  #hero .subheadline {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  .btn-cta {
+    display: inline-block;
+    background-color: #C2653E; /* Burnt Sienna Clay */
+    color: #F5F1E7;           /* Restoration White */
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    transition: filter 0.2s ease;
+  }
+
+  .btn-cta:hover {
+    filter: brightness(1.1);
+  }
+
+  #hero .microcopy {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 0.5rem;
+  }
   </style>
 </head>
 <body>
 
-  <header>
-    <!-- updated -->
-    <img src="./images/hero-vase.png" alt="Reconstructed vase with lily" class="hero" />
-    <h1>Is This All There Is?</h1>
-  </header>
+<section id="hero">
+  <h1>Sometimes the beauty is in how you put the pieces back together</h1>
+  <p class="subheadline">
+    Find clarity, strength, and purpose by transforming life's challenges into your greatest source of growth.
+  </p>
+  <a href="#clarity-call" class="btn-cta">Book Your Free Clarity Call</a>
+  <p class="microcopy">30-minute session — no obligation.</p>
+</section>
 
   <section class="welcome">
     <div class="content-block">
