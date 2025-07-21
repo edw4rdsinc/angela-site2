@@ -136,6 +136,59 @@
     color: #999;
     margin-top: 0.5rem;
   }
+      /* Testimonials Section Styles */
+  #testimonials {
+    background-color: #fff;      /* White background for contrast */
+    padding: 4rem 1rem;
+    text-align: center;
+  }
+
+  #testimonials h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+
+  .testimonial-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .testimonial {
+    max-width: 320px;
+    background-color: #F5F1E7;   /* Restoration White */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: left;
+  }
+
+  .testimonial p.quote {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+
+  .testimonial p.author {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+
+  .testimonial p.role {
+    font-size: 0.875rem;
+    color: #777;
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .testimonial-list {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
   </style>
 </head>
 <body>
@@ -148,6 +201,27 @@
   <a href="#clarity-call" class="btn-cta">Book Your Free Clarity Call</a>
   <p class="microcopy">30-minute session — no obligation.</p>
 </section>
+<section id="testimonials">
+  <h2>What Clients Say</h2>
+  <div class="testimonial-list">
+    <div class="testimonial">
+      <p class="quote">“Angela’s guidance helped me rebuild my confidence and set boundaries I never thought possible. I feel like a new person.”</p>
+      <p class="author">— Sarah K.</p>
+      <p class="role">Marketing Director</p>
+    </div>
+    <div class="testimonial">
+      <p class="quote">“In just a few sessions, I transformed my relationships and found clarity I’d been missing for years.”</p>
+      <p class="author">— Michael L.</p>
+      <p class="role">Entrepreneur</p>
+    </div>
+    <div class="testimonial">
+      <p class="quote">“Angela’s compassionate style and insightful exercises changed how I see myself—and the results show.”</p>
+      <p class="author">— Priya S.</p>
+      <p class="role">Teacher</p>
+    </div>
+  </div>
+</section>
+  
 
   <section class="welcome">
     <div class="content-block">
