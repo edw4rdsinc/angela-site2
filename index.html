@@ -237,7 +237,15 @@
   margin-top: 0.25rem;
   font-size: 0.75rem;
 }
-
+.profile-photo {
+  width: 180px;          /* or whatever diameter you want */
+  height: 180px;         /* match width for a perfect circle */
+  object-fit: cover;     /* fills the box and crops overflow */
+  border-radius: 50%;    /* turns the square into a circle */
+  border: 4px solid #F5F1E7; /* optional white ring to match your brand */
+  display: block;
+  margin: 0 auto 1rem;   /* centers it and adds bottom spacing */
+}
   </style>
 </head>
 <body>
@@ -287,6 +295,11 @@
       <img src="./images/angela-photo.jpg" alt="Angela headshot" />
       <p>Hi, I’m Angela — a certified life coach and founder of <strong>The Reconstructionists</strong>. I bring experience in startup HR and 10 years of mentorship work to help women pause, reconnect, and find purpose. My coaching is rooted in empathy and real-life transformation.</p>
     </div>
+    <img
+  src="./images/angela-photo.jpg"
+  alt="Angela smiling in a garden setting"
+  class="profile-photo"
+/>
   </section>
 
   <section class="highlight textured">
