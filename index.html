@@ -140,53 +140,59 @@
   }
       /* Testimonials Section Styles */
   #testimonials {
-    background-color: #fff;      /* White background for contrast */
-    padding: 4rem 1rem;
-    text-align: center;
-  }
+  background-color: #fff;      /* White background for contrast */
+  padding: 4rem 1rem;
+  text-align: center;
+}
 
-  #testimonials h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: #333;
-  }
-    #testimonials .testimonial-list {
-        flex-direction: column;
-        gap: 1.5rem;
+#testimonials h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
 
+/* Base layout: side-by-side cards */
+.testimonial-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* Stack cards on mobile only */
+@media (max-width: 640px) {
   .testimonial-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 1.5rem;
   }
+}
 
-  .testimonial {
-    max-width: 320px;
-    background-color: #F5F1E7;   /* Restoration White */
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    text-align: left;
-  }
+.testimonial {
+  max-width: 320px;
+  background-color: #F5F1E7;   /* Restoration White */
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  text-align: left;
+}
 
-  .testimonial p.quote {
-    font-style: italic;
-    color: #555;
-    margin-bottom: 1.5rem;
-  }
+.testimonial p.quote {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
 
-  .testimonial p.author {
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-  }
+.testimonial p.author {
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
 
-  .testimonial p.role {
-    font-size: 0.875rem;
-    color: #777;
-    margin-top: 0.25rem;
-  }
+.testimonial p.role {
+  font-size: 0.875rem;
+  color: #777;
+  margin-top: 0.25rem;
+}
 
   @media (max-width: 640px) {
       .btn-cta {
