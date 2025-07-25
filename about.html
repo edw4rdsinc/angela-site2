@@ -9,14 +9,20 @@
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #F5F1E7;
+      /* subtle repeating paper texture */
+      background-image: url('textures/handmade-paper.png');
+      background-repeat: repeat;
+      background-size: auto;
       color: #333;
       line-height: 1.7;
       padding: 2rem;
     }
+
     header, footer {
       text-align: center;
       padding: 1rem;
     }
+
     nav ul {
       list-style: none;
       padding: 0;
@@ -24,22 +30,30 @@
       justify-content: center;
       gap: 1.5rem;
     }
+
     nav a {
       text-decoration: none;
       color: #333;
       font-weight: bold;
     }
+
     main {
       max-width: 700px;
       margin: 2rem auto;
+      background: rgba(255,255,255,0.85); /* slight white overlay for extra readability */
+      padding: 2rem;
+      border-radius: 8px;
     }
+
     h1, h2 {
       text-align: center;
       color: #3a2e2a;
     }
+
     section {
       margin-bottom: 3rem;
     }
+
     .hero-image img {
       width: 100%;
       max-width: 600px;
@@ -47,6 +61,7 @@
       display: block;
       border-radius: 8px;
     }
+
     a.button {
       display: inline-block;
       margin-top: 2rem;
