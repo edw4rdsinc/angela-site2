@@ -4,58 +4,189 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy & Terms | The Reconstructionists</title>
+
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #F5F1E7;
-      /* handmade paper texture */
-      background-image: url('textures/handmade-paper.png');
-      background-repeat: repeat;
-      background-size: auto;
-      color: #333;
-      line-height: 1.7;
-      padding: 2rem;
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Variables */
+    :root {
+      --restoration-white: #F5F1E7;
+      --burnt-sienna-clay: #C2653E;
+      --dark-text: #333;
+      --light-text: #F5F1E7;
+      --gray-text: #666;
+      --light-gray-text: #999;
+      --section-bg-light: #F8F6F2;
+      --section-bg-highlight: #F1EFEC; /* Slightly darker than restoration white for contrast */
+      --border-color: rgba(0, 0, 0, 0.08);
+      --shadow-light: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-medium: 0 8px 20px rgba(0,0,0,0.1);
     }
+
+    /* Global resets & typography */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--section-bg-light);
+      color: var(--dark-text);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      overflow-x: hidden; /* Prevent horizontal scroll from AOS */
+    }
+
     header, footer {
       text-align: center;
       padding: 1rem;
     }
+
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--dark-text);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block; /* For underline */
+      padding-bottom: 0.5rem; /* Space for underline */
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      margin-top: 2.5rem; /* Adjust spacing for section headings */
+    }
+
+    /* Underline for headers */
+    h1::after, h2::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 60px; /* Adjust width as needed */
+      height: 3px;
+      background-color: var(--burnt-sienna-clay);
+      border-radius: 2px;
+    }
+
+    /* Navigation */
+    nav {
+      background-color: var(--restoration-white);
+      padding: 1rem 0;
+      box-shadow: var(--shadow-light);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
     nav ul {
       list-style: none;
+      margin: 0;
       padding: 0;
       display: flex;
+      flex-wrap: wrap; /* Allow wrapping on small screens */
       justify-content: center;
       gap: 1.5rem;
     }
+
     nav a {
       text-decoration: none;
-      color: #333;
-      font-weight: bold;
+      color: var(--dark-text);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
+
+    nav a:hover {
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
+    }
+
+    /* Main Content Container */
     main {
-      max-width: 700px;
+      max-width: 800px;
       margin: 2rem auto;
-      background: rgba(255,255,255,0.9);
-      padding: 2rem;
-      border-radius: 8px;
+      background-color: var(--restoration-white);
+      padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-medium);
+      border: 1px solid var(--border-color);
+      text-align: center; /* Center inline-block children like h1 and h2 */
     }
-    h1, h2 {
-      text-align: center;
-      color: #3a2e2a;
+
+    /* Individual Sections within Main */
+    main section {
+      margin-bottom: 3rem;
+      padding: 0;
+      text-align: left; /* Align policy text left for readability */
     }
-    h2 {
-      margin-top: 2rem;
-      margin-bottom: 0.5rem;
+
+    main section h2 {
+      text-align: center; /* Keep section headers centered */
     }
-    ul {
-      margin-left: 1.5rem;
+
+    main section p, main section ul {
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--dark-text);
     }
-    section {
-      margin-bottom: 1.5rem;
+    
+    main section ul {
+        padding-left: 2rem; /* Indent list items */
     }
+
     .contact-email {
-      font-weight: bold;
+      font-weight: 600; /* Preserve bold styling for email */
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      background-color: var(--section-bg-highlight);
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+
+    footer img {
+      max-width: 250px;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    footer p {
+      font-size: 0.85rem;
+      color: var(--gray-text);
+      margin: 0;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav a {
+        padding: 0.7rem 1rem;
+      }
+      h1 {
+        font-size: clamp(2rem, 8vw, 3rem);
+      }
+      h2 {
+        font-size: clamp(1.6rem, 7vw, 2.5rem);
+      }
+      main section p, main section ul {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -73,10 +204,10 @@
   </header>
 
   <main>
-    <h1>Privacy Policy &amp; Terms</h1>
-    <p style="text-align:center; font-style:italic;">Last updated: July 2025</p>
+    <h1 data-aos="fade-up">Privacy Policy &amp; Terms</h1>
+    <p style="text-align:center; font-style:italic;" data-aos="fade-up" data-aos-delay="100">Last updated: July 28, 2025</p>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="200">
       <h2>Privacy</h2>
       <p>Your privacy is important to us.</p>
       <p>When you book a call, download a resource, or reach out through this site, your information stays private. We never sell, share, or misuse your data.</p>
@@ -90,13 +221,13 @@
       <p>You can unsubscribe from emails at any time. Your information will be removed upon request.</p>
     </section>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="100">
       <h2>Coaching Disclaimer</h2>
       <p>Angela’s coaching services are not a substitute for therapy, counseling, or medical care.</p>
       <p>While sessions may be emotional or healing in nature, Angela does not diagnose, treat, or provide medical advice. If you are experiencing a crisis or need clinical support, we encourage you to reach out to a licensed mental health professional.</p>
     </section>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="100">
       <h2>Terms of Use</h2>
       <p>By using this site, you agree to:</p>
       <ul>
@@ -107,7 +238,7 @@
       <p>All written and visual content on this site is copyrighted and may not be reused without permission.</p>
     </section>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="100">
       <h2>Contact</h2>
       <p>If you have questions about this policy, reach out anytime:</p>
       <p class="contact-email">angela@thereconstructionists.co</p>
@@ -115,7 +246,16 @@
   </main>
 
   <footer>
+    <img src="./images/logo-tagline.png" alt="The Reconstructionists - Rebuilding Lives" />
     <p>&copy; 2025 The Reconstructionists</p>
   </footer>
+
+  <script>
+    // Initialize AOS
+    AOS.init({
+      once: true, // animations once
+      mirror: false, // whether elements should animate out while scrolling past them
+    });
+  </script>
 </body>
 </html>
