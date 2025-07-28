@@ -318,16 +318,37 @@
       box-shadow: 0 0 0 3px rgba(194, 101, 62, 0.2);
     }
 
-    #clarity-call .btn-cta {
-      display: block;
-      width: 100%;
-      padding: 1rem;
-      font-size: 1.1rem;
-      margin-top: 0.5rem;
-      /* Centering for block element */
-      max-width: 300px; /* Limit width to allow centering */
-      margin-left: auto;
-      margin-right: auto;
+    /* Centering for CTA buttons */
+    .btn-cta-container {
+      text-align: center; /* Center inline-block children */
+      margin-top: 1.5rem; /* Adjust spacing as needed */
+    }
+
+    .btn-cta {
+      display: inline-block; /* Changed to inline-block for centering in btn-cta-container */
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.9rem 2rem;
+      border-radius: 2.5rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-medium);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 1rem;
+    }
+
+    .btn-cta:hover {
+      background-color: #A85A36; /* Slightly darker burnt sienna */
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    #hero .microcopy {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 1rem;
     }
 
     #clarity-call .microcopy {
@@ -347,6 +368,51 @@
       margin: 0 auto 1.5rem;
       box-shadow: var(--shadow-medium);
     }
+
+    /* Content Layout for Image and Text */
+    .content-with-image {
+      display: flex;
+      flex-direction: column; /* Default to column on small screens */
+      align-items: center;
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left; /* Align text within its block */
+    }
+
+    @media (min-width: 768px) {
+      .content-with-image {
+        flex-direction: row; /* Row on larger screens */
+        text-align: left;
+      }
+      .content-with-image.image-right {
+        flex-direction: row-reverse;
+      }
+      .content-with-image .image-wrapper {
+        flex: 0 0 300px; /* Fixed width for image container */
+        max-width: 300px;
+      }
+      .content-with-image .text-content {
+        flex: 1;
+      }
+    }
+
+    .content-with-image .image-wrapper {
+      width: 100%;
+      max-width: 300px; /* Ensure image doesn't get too big on small screens */
+      text-align: center; /* Center image if it's smaller than max-width */
+    }
+
+    .content-with-image img {
+      width: 100%; /* Make image fill its wrapper */
+      height: auto;
+      margin-bottom: 0; /* Remove default margin */
+    }
+
+    .content-with-image .text-content {
+      flex-grow: 1;
+    }
+
 
     /* Other sections */
     .content-block {
@@ -441,16 +507,6 @@
       background-position: center;
     }
 
-    /* Images in sections */
-    section img {
-      max-width: 300px;
-      height: auto;
-      margin-bottom: 1.5rem;
-      border-radius: 0.75rem;
-      box-shadow: var(--shadow-light);
-      border: 1px solid var(--border-color);
-    }
-
     /* Footer */
     footer {
       text-align: center;
@@ -507,6 +563,9 @@
       .offer-list li {
         font-size: 1rem;
       }
+      .btn-cta-container {
+        margin-top: 1rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -546,13 +605,15 @@
     <p class="subheadline">
       Find clarity, strength, and purpose by transforming life's challenges into your greatest source of growth.
     </p>
-    <a
-      href="#"
-      class="btn-cta"
-      onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
-    >
-      Book Your Free Clarity Call
-    </a>
+    <div class="btn-cta-container">
+      <a
+        href="#"
+        class="btn-cta"
+        onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
+      >
+        Book Your Free Clarity Call
+      </a>
+    </div>
     <p class="microcopy">30-minute session — no obligation.</p>
   </section>
 
@@ -595,19 +656,24 @@
 
   <!-- Welcome Section -->
   <section class="welcome textured-section" data-aos="fade-up" data-aos-delay="100">
-    <div class="content-block">
-      <img
-        src="./images/angela-photo.jpeg"
-        alt="Angela smiling in a garden setting"
-        class="profile-photo"
-      />
-      <p>
-        Hi, I’m Angela — a certified life coach and founder of
-        <strong>The Reconstructionists</strong>. I bring experience in startup HR
-        and over 10 years of mentorship work to help women pause, reconnect, and
-        find purpose. My coaching is rooted in empathy and real-life
-        transformation.
-      </p>
+    <h2 class="section-title"></h2> <!-- Empty h2 to maintain structure if needed, but content-block is primary -->
+    <div class="content-with-image">
+      <div class="image-wrapper">
+        <img
+          src="./images/angela-photo.jpeg"
+          alt="Angela smiling in a garden setting"
+          class="profile-photo"
+        />
+      </div>
+      <div class="text-content">
+        <p>
+          Hi, I’m Angela — a certified life coach and founder of
+          <strong>The Reconstructionists</strong>. I bring experience in startup HR
+          and over 10 years of mentorship work to help women pause, reconnect, and
+          find purpose. My coaching is rooted in empathy and real-life
+          transformation.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -629,23 +695,29 @@
 
   <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">The Journey We'll Take</h2>
-    <img src="./images/journey-vine.png" alt="Lily growth timeline" />
-    <div class="content-block">
-      <p><strong>1. Acknowledge & Release:</strong> Honor your feelings. Let go of the noise and “shoulds.”</p>
-      <p><strong>2. Explore & Reconnect:</strong> Uncover your truths. Remember what lights you up.</p>
-      <p><strong>3. Design & Live:</strong> Craft a rhythm that supports a life of calm, purpose, and joy.</p>
+    <div class="content-with-image image-right"> <!-- Image on right -->
+      <div class="image-wrapper">
+        <img src="./images/journey-vine.png" alt="Lily growth timeline" />
+      </div>
+      <div class="text-content">
+        <p><strong>1. Acknowledge & Release:</strong> Honor your feelings. Let go of the noise and “shoulds.”</p>
+        <p><strong>2. Explore & Reconnect:</strong> Uncover your truths. Remember what lights you up.</p>
+        <p><strong>3. Design & Live:</strong> Craft a rhythm that supports a life of calm, purpose, and joy.</p>
+      </div>
     </div>
   </section>
 
   <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">Ready to Begin?</h2>
-    <a
-      href="#"
-      class="btn-cta"
-      onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
-    >
-      Book Your Free Clarity Call
-    </a>
+    <div class="btn-cta-container">
+      <a
+        href="#"
+        class="btn-cta"
+        onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
+      >
+        Book Your Free Clarity Call
+      </a>
+    </div>
   </section>
 
   <!-- Download Guide Section -->
@@ -671,39 +743,49 @@
 
   <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">The Cost of Staying Stuck</h2>
-    <img src="./images/broken-vase.png" alt="Cracked vase without bloom" />
-    <div class="content-block">
-      <ul>
-        <li> Emotional drain and disconnection</li>
-        <li> Quiet dissatisfaction that lingers</li>
-        <li> Missed clarity and purpose</li>
-        <li> An unlived version of your life</li>
-      </ul>
+    <div class="content-with-image"> <!-- Image on left -->
+      <div class="image-wrapper">
+        <img src="./images/broken-vase.png" alt="Cracked vase without bloom" />
+      </div>
+      <div class="text-content">
+        <ul>
+          <li> Emotional drain and disconnection</li>
+          <li> Quiet dissatisfaction that lingers</li>
+          <li> Missed clarity and purpose</li>
+          <li> An unlived version of your life</li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">What’s Possible</h2>
-    <img src="./images/sunrise-vase.png" alt="Blooming vase at sunrise" />
-    <div class="content-block">
-      <ul>
-        <li> Feel deeply calm and clear</li>
-        <li> Reconnect with your authentic self</li>
-        <li> Live with joyful intention</li>
-        <li> Embrace the ‘more’ you’ve been longing for</li>
-      </ul>
+    <div class="content-with-image image-right"> <!-- Image on right -->
+      <div class="image-wrapper">
+        <img src="./images/sunrise-vase.png" alt="Blooming vase at sunrise" />
+      </div>
+      <div class="text-content">
+        <ul>
+          <li> Feel deeply calm and clear</li>
+          <li> Reconnect with your authentic self</li>
+          <li> Live with joyful intention</li>
+          <li> Embrace the ‘more’ you’ve been longing for</li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">Let’s Begin, Shall We?</h2>
-    <a
-      href="#"
-      class="btn-cta"
-      onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
-    >
-      Book Your Free Clarity Call
-    </a>
+    <div class="btn-cta-container">
+      <a
+        href="#"
+        class="btn-cta"
+        onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
+      >
+        Book Your Free Clarity Call
+      </a>
+    </div>
   </section>
 
   <footer>
