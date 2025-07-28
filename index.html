@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Reconstructionists</title>
 
@@ -16,143 +16,324 @@
     src="https://assets.calendly.com/assets/external/widget.js"
     type="text/javascript"
   ></script>
+
+  <!-- AOS Library for scroll animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
   <style>
-     /* Navigation */
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-}
-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-}
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Variables */
+    :root {
+      --restoration-white: #F5F1E7;
+      --burnt-sienna-clay: #C2653E;
+      --dark-text: #333;
+      --light-text: #F5F1E7;
+      --gray-text: #666;
+      --light-gray-text: #999;
+      --section-bg-light: #F8F6F2;
+      --section-bg-highlight: #F1EFEC; /* Slightly darker than restoration white for contrast */
+      --border-color: rgba(0, 0, 0, 0.08);
+      --shadow-light: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-medium: 0 8px 20px rgba(0,0,0,0.1);
+    }
 
     /* Global resets & typography */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f6f2;
-      color: #333;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--section-bg-light);
+      color: var(--dark-text);
       margin: 0;
       padding: 0;
-    }
-    section, header {
-      padding: 4rem 1rem;
-      text-align: center;
+      line-height: 1.6;
+      overflow-x: hidden; /* Prevent horizontal scroll from AOS */
     }
 
-    /* Hero */
-    #hero {
-      background-color: #F5F1E7;
+    section, header {
       padding: clamp(2rem, 5vw, 4rem) 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 1; /* Ensure content is above textures */
     }
-    #hero h1 {
-      font-size: clamp(1.75rem, 5vw, 2.5rem);
+
+    h1, h2, .section-title {
+      font-family: 'Playfair Display', serif;
+      color: var(--dark-text);
       line-height: 1.2;
       margin-bottom: 1rem;
-      color: #333;
+      position: relative;
+      display: inline-block; /* For underline */
+      padding-bottom: 0.5rem; /* Space for underline */
     }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      margin-bottom: 1.5rem;
+    }
+
+    h2, .section-title {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+    }
+
+    /* Underline for headers */
+    h1::after, h2::after, .section-title::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 60px; /* Adjust width as needed */
+      height: 3px;
+      background-color: var(--burnt-sienna-clay);
+      border-radius: 2px;
+    }
+
+    /* Navigation */
+    nav {
+      background-color: var(--restoration-white);
+      padding: 1rem 0;
+      box-shadow: var(--shadow-light);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap; /* Allow wrapping on small screens */
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--dark-text);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
+    }
+
+    /* Hero Section */
+    #hero {
+      background-color: var(--dark-text); /* Dark background for grayscale image */
+      color: var(--light-text);
+      padding: clamp(4rem, 10vw, 8rem) 1rem;
+      position: relative;
+      overflow: hidden; /* For SVG pattern */
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://placehold.co/1920x1080/888888/888888?text='); /* Placeholder for grayscale image */
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(100%);
+      opacity: 0.6; /* Grayscale effect */
+      z-index: -2;
+    }
+
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4); /* Dark overlay */
+      z-index: -1;
+    }
+
+    /* SVG dot/texture pattern for hero */
+    .hero-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.15' fill-rule='evenodd'%3E%3Ccx x='3' y='3' r='0.5'/%3E%3C/g%3E%3C/svg%3E");
+      z-index: -0.5;
+    }
+
+    #hero h1, #hero .subheadline, #hero .btn-cta, #hero .microcopy {
+      color: var(--light-text);
+      z-index: 1; /* Ensure text is above overlays */
+      position: relative;
+    }
+
     #hero .subheadline {
-      font-size: 1.25rem;
-      color: #666;
-      margin-bottom: 2rem;
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      margin-bottom: 2.5rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
     .btn-cta {
       display: inline-block;
-      background-color: #C2653E;
-      color: #F5F1E7;
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
       text-decoration: none;
       font-weight: 600;
-      padding: 0.75rem 1.5rem;
-      border-radius: 2rem;
-      transition: filter 0.2s ease;
+      padding: 0.9rem 2rem;
+      border-radius: 2.5rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-medium);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 1rem;
     }
+
     .btn-cta:hover {
-      filter: brightness(1.1);
+      background-color: #A85A36; /* Slightly darker burnt sienna */
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
+
     #hero .microcopy {
-      font-size: 0.75rem;
-      color: #999;
-      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 1rem;
+    }
+
+    /* Section Containers */
+    section:not(#hero):not(footer) {
+      background-color: var(--restoration-white);
+      margin: 2rem auto;
+      max-width: 1000px;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-color);
+      padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+    }
+
+    /* Section background textures */
+    .textured-section {
+      background-color: var(--section-bg-highlight); /* Base color for texture */
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); /* Subtle noise/grain */
+      background-size: cover;
+      background-position: center;
     }
 
     /* Testimonials */
-    #testimonials {
-      background-color: #fff;
-      padding: 4rem 1rem;
-    }
     #testimonials h2 {
-      font-size: 2rem;
-      margin-bottom: 2rem;
-      color: #333;
+      margin-bottom: 2.5rem;
     }
+
     .testimonial-list {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       justify-content: center;
       gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
     }
+
     .testimonial {
-      max-width: 320px;
-      background-color: #F5F1E7;
+      background-color: var(--restoration-white);
       padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-light);
       text-align: left;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* Pushes author to bottom */
     }
+
     .testimonial p.quote {
       font-style: italic;
-      color: #555;
+      color: var(--gray-text);
       margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
     }
+
     .testimonial p.author {
       font-weight: 600;
-      color: #333;
+      color: var(--dark-text);
       margin: 0;
+      font-size: 1rem;
     }
+
     .testimonial p.role {
       font-size: 0.875rem;
-      color: #777;
+      color: var(--gray-text);
       margin-top: 0.25rem;
     }
 
     /* Clarity Call form */
     #clarity-call {
-      background-color: #F5F1E7;
-      padding: 2rem 1rem;
+      background-color: var(--section-bg-highlight);
+      padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-color);
+      max-width: 600px; /* Smaller max-width for form */
+      margin: 2rem auto;
     }
+
     #clarity-call h2 {
-      font-size: 1.75rem;
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
     }
+
     #clarity-call form {
-      max-width: 360px;
+      max-width: 400px;
       margin: 0 auto;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
+
     #clarity-call input {
       width: 100%;
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.6rem;
       font-size: 1rem;
+      background-color: var(--restoration-white);
+      color: var(--dark-text);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
+
+    #clarity-call input:focus {
+      outline: none;
+      border-color: var(--burnt-sienna-clay);
+      box-shadow: 0 0 0 3px rgba(194, 101, 62, 0.2);
+    }
+
     #clarity-call .btn-cta {
       display: block;
       width: 100%;
-      padding: 0.75rem;
-      font-size: 1rem;
+      padding: 1rem;
+      font-size: 1.1rem;
       margin-top: 0.5rem;
+      /* Centering for block element */
+      max-width: 300px; /* Limit width to allow centering */
+      margin-left: auto;
+      margin-right: auto;
     }
+
     #clarity-call .microcopy {
-      font-size: 0.75rem;
-      color: #999;
-      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      color: var(--light-gray-text);
+      margin-top: 0.5rem;
     }
 
     /* Profile photo */
@@ -161,78 +342,140 @@ nav a {
       height: 180px;
       object-fit: cover;
       border-radius: 50%;
-      border: 4px solid #F5F1E7;
+      border: 5px solid var(--burnt-sienna-clay);
       display: block;
-      margin: 0 auto 1rem;
+      margin: 0 auto 1.5rem;
+      box-shadow: var(--shadow-medium);
     }
 
     /* Other sections */
-    .section-title {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #5a7c6c;
-    }
     .content-block {
       max-width: 800px;
       margin: 0 auto;
-      font-size: 1.1rem;
-      line-height: 1.6;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--dark-text);
     }
+
+    .content-block p {
+      margin-bottom: 1rem;
+    }
+
+    .content-block ul {
+      list-style: none;
+      padding: 0;
+      margin: 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .content-block ul li {
+      position: relative;
+      padding-left: 1.8rem;
+      text-align: left;
+    }
+
+    .content-block ul li::before {
+      content: '•'; /* Bullet point */
+      color: var(--burnt-sienna-clay);
+      font-size: 1.5rem;
+      position: absolute;
+      left: 0;
+      top: -0.1em;
+    }
+
     .offer-list {
       list-style: none;
       padding: 0;
+      margin-top: 2rem;
     }
-    .cta-button {
-      background-color: #7BA686;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      text-decoration: none;
+
+    .offer-list li {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      padding-left: 1.8rem;
+      text-align: left;
+    }
+
+    .offer-list li::before {
+      content: '✓'; /* Checkmark */
+      color: var(--burnt-sienna-clay);
+      font-size: 1.3rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: bold;
+    }
+
+    .cta-button { /* This was from the original HTML, but btn-cta is preferred */
       display: inline-block;
-      margin-top: 1rem;
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.9rem 2rem;
+      border-radius: 2.5rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-medium);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 1rem;
+      margin-top: 2rem;
     }
+
+    .cta-button:hover {
+      background-color: #A85A36;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
     .highlight {
-      background-color: #f1efeb;
-      padding: 2rem 1rem;
+      background-color: var(--section-bg-highlight);
     }
+
     .textured {
-      background-image: url('/images/cracked-texture.jpg');
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); /* Subtle noise/grain */
       background-size: cover;
       background-position: center;
     }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background-color: #f0ece6;
-    }
-    footer p {
-      font-size: 0.9rem;
-      color: #777;
+
+    /* Images in sections */
+    section img {
+      max-width: 300px;
+      height: auto;
+      margin-bottom: 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid var(--border-color);
     }
 
-    /* Responsive tweaks */
-    @media (max-width: 768px) {
-      h1, .section-title {
-        font-size: 2rem;
-      }
-    }
-    @media (max-width: 640px) {
-      .testimonial-list {
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-      .btn-cta {
-        display: block;
-        width: 100%;
-        padding: 1rem;
-        font-size: 1.125rem;
-      }
-    }
-      #download-guide {
+    /* Footer */
+    footer {
+      text-align: center;
       padding: 3rem 1rem;
+      background-color: var(--section-bg-highlight);
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+
+    footer img {
+      max-width: 250px;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    footer p {
+      font-size: 0.85rem;
+      color: var(--gray-text);
+      margin: 0;
+    }
+
+    /* Download Guide Section */
+    #download-guide {
+      padding: 3rem 1rem;
+      background-color: var(--section-bg-highlight);
     }
 
     #download-form-container {
@@ -241,15 +484,51 @@ nav a {
     }
 
     #download-form-container iframe {
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-medium);
+      border: 1px solid var(--border-color);
     }
 
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav a {
+        padding: 0.7rem 1rem;
+      }
+      .testimonial-list {
+        grid-template-columns: 1fr; /* Stack testimonials on smaller screens */
+      }
+      .content-block {
+        font-size: 1rem;
+      }
+      .offer-list li {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: clamp(2rem, 8vw, 3rem);
+      }
+      h2, .section-title {
+        font-size: clamp(1.6rem, 7vw, 2.5rem);
+      }
+      .btn-cta, .cta-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.95rem;
+      }
+      #clarity-call input {
+        padding: 0.75rem 1rem;
+      }
+    }
   </style>
-
-
 </head>
 <body>
+  <div class="hero-pattern"></div> <!-- SVG pattern for hero -->
+
   <header>
     <nav>
       <ul>
@@ -262,86 +541,95 @@ nav a {
     </nav>
   </header>
 
-  <section id="hero">
-    …
+  <section id="hero" data-aos="fade-up" data-aos-duration="1000">
+    <h1>Sometimes the beauty is in how you put the pieces back together</h1>
+    <p class="subheadline">
+      Find clarity, strength, and purpose by transforming life's challenges into your greatest source of growth.
+    </p>
+    <a
+      href="#"
+      class="btn-cta"
+      onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
+    >
+      Book Your Free Clarity Call
+    </a>
+    <p class="microcopy">30-minute session — no obligation.</p>
+  </section>
 
-<body>
+  <section id="testimonials" class="textured-section" data-aos="fade-up" data-aos-delay="100">
+    <h2>What Clients Say</h2>
+    <div class="testimonial-list">
+      <div class="testimonial" data-aos="fade-up" data-aos-delay="200">
+        <p class="quote">
+          "Angela’s coaching helped me navigate a significant career transition with grace and confidence. Her insights were invaluable."
+        </p>
+        <p class="author">Sarah P.</p>
+        <p class="role">Marketing Director</p>
+      </div>
+      <div class="testimonial" data-aos="fade-up" data-aos-delay="300">
+        <p class="quote">
+          "I finally feel like I have a clear path forward. Angela helped me uncover what truly matters and align my life with it."
+        </p>
+        <p class="author">Jessica L.</p>
+        <p class="role">Entrepreneur</p>
+      </div>
+      <div class="testimonial" data-aos="fade-up" data-aos-delay="400">
+        <p class="quote">
+          "The Reconstructionists provided the space I needed to heal and rediscover my strength. Highly recommend."
+        </p>
+        <p class="author">Emily R.</p>
+        <p class="role">Artist</p>
+      </div>
+    </div>
+  </section>
 
-
-<section id="hero">
-  <h1>Sometimes the beauty is in how you put the pieces back together</h1>
-  <p class="subheadline">
-    Find clarity, strength, and purpose by transforming life's challenges into your greatest source of growth.
-  </p>
-  <a
-  href="#"
-  class="btn-cta"
-  onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
->
-  Book Your Free Clarity Call
-</a>
-
-
-
-  <p class="microcopy">30-minute session — no obligation.</p>
-</section>
-<section id="testimonials">
-  <h2>What Clients Say</h2>
-
-</section>
-
-  <section id="clarity-call">
-  <h2>Ready for Your Free Clarity Call?</h2>
-  <form action="/submit-clarity-call" method="POST">
-    <input type="text" name="name" placeholder="Your Name" required />
-    <input type="email" name="email" placeholder="Email Address" required />
-    <button type="submit" class="btn-cta">Book Your Free Clarity Call</button>
-    <p class="microcopy">No obligation · 30-minute session</p>
-  </form>
-</section>
+  <section id="clarity-call" data-aos="fade-up" data-aos-delay="100">
+    <h2>Ready for Your Free Clarity Call?</h2>
+    <form action="/submit-clarity-call" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <button type="submit" class="btn-cta">Book Your Free Clarity Call</button>
+      <p class="microcopy">No obligation · 30-minute session</p>
+    </form>
+  </section>
 
   <!-- Welcome Section -->
-<section class="welcome">
-  <div class="content-block">
-    <img
-      src="/images/angela-photo.jpeg"
-      alt="Angela smiling in a garden setting"
-      class="profile-photo"
-    />
-    <p>
-      Hi, I’m Angela — a certified life coach and founder of
-      <strong>The Reconstructionists</strong>. I bring experience in startup HR
-      and over 10 years of mentorship work to help women pause, reconnect, and
-      find purpose. My coaching is rooted in empathy and real-life
-      transformation.
-    </p>
-  </div>
-</section>
+  <section class="welcome textured-section" data-aos="fade-up" data-aos-delay="100">
+    <div class="content-block">
+      <img
+        src="./images/angela-photo.jpeg"
+        alt="Angela smiling in a garden setting"
+        class="profile-photo"
+      />
+      <p>
+        Hi, I’m Angela — a certified life coach and founder of
+        <strong>The Reconstructionists</strong>. I bring experience in startup HR
+        and over 10 years of mentorship work to help women pause, reconnect, and
+        find purpose. My coaching is rooted in empathy and real-life
+        transformation.
+      </p>
+    </div>
+  </section>
 
-
-  <section class="highlight textured">
+  <section class="highlight textured-section" data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">That Quiet Ache</h2>
     <div class="content-block">
       <p>You’ve done so much, and you’re proud of it. But underneath the full calendar and outward appearance, something feels off. You wonder, <em>Is this it?</em> The “more” you’re searching for might not require changing your circumstances — just your perspective.</p>
     </div>
   </section>
 
-  <section>
-  <h2 class="section-title">What I Offer</h2>
-  <ul class="offer-list content-block">
-    <li> Breathe deeper and release what no longer serves you</li>
-    <li> Reconnect with your core values, forgotten dreams, and authentic voice</li>
-    <li> Make gentle but powerful shifts that fill your days with meaning and peace</li>
-  </ul>
-</section>
+  <section data-aos="fade-up" data-aos-delay="100">
+    <h2 class="section-title">What I Offer</h2>
+    <ul class="offer-list content-block">
+      <li> Breathe deeper and release what no longer serves you</li>
+      <li> Reconnect with your core values, forgotten dreams, and authentic voice</li>
+      <li> Make gentle but powerful shifts that fill your days with meaning and peace</li>
+    </ul>
+  </section>
 
-
-
-
-  <section>
+  <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">The Journey We'll Take</h2>
-    <!-- updated -->
-    <img src="./images/journey-vine.png" alt="Lily growth timeline" style="max-width: 300px; margin-bottom: 1rem;" />
+    <img src="./images/journey-vine.png" alt="Lily growth timeline" />
     <div class="content-block">
       <p><strong>1. Acknowledge & Release:</strong> Honor your feelings. Let go of the noise and “shoulds.”</p>
       <p><strong>2. Explore & Reconnect:</strong> Uncover your truths. Remember what lights you up.</p>
@@ -349,47 +637,41 @@ nav a {
     </div>
   </section>
 
-  <section>
+  <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">Ready to Begin?</h2>
-  <a
-  href="#"
-  class="btn-cta"
-  onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
->
-  Book Your Free Clarity Call
-</a>
-
-
-
+    <a
+      href="#"
+      class="btn-cta"
+      onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
+    >
+      Book Your Free Clarity Call
+    </a>
   </section>
 
   <!-- Download Guide Section -->
-<section id="download-guide" class="highlight">
-  <h2 class="section-title">Not Quite Ready?</h2>
-  <div class="content-block">
-    <p>
-      Start with a gentle step. Download <em>"Reclaim Your True Self"</em> by
-      completing this quick form:
-    </p>
-
-    <div id="download-form-container">
-      <iframe
-        src="https://api.leadconnectorhq.com/widget/survey/ElJnLdHkSAF18kQlPH0M"
-        id="ElJnLdHkSAF18kQlPH0M"
-        title="Download Guide Survey"
-        style="border:none; width:100%; min-height:400px;"
-        scrolling="no"
-      ></iframe>
-      <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+  <section id="download-guide" class="highlight textured-section" data-aos="fade-up" data-aos-delay="100">
+    <h2 class="section-title">Not Quite Ready?</h2>
+    <div class="content-block">
+      <p>
+        Start with a gentle step. Download <em>"Reclaim Your True Self"</em> by
+        completing this quick form:
+      </p>
+      <div id="download-form-container">
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/survey/ElJnLdHkSAF18kQlPH0M"
+          id="ElJnLdHkSAF18kQlPH0M"
+          title="Download Guide Survey"
+          style="border:none; width:100%; min-height:400px;"
+          scrolling="no"
+        ></iframe>
+        <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-  <section>
+  <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">The Cost of Staying Stuck</h2>
-    <!-- updated -->
-    <img src="./images/broken-vase.png" alt="Cracked vase without bloom" style="max-width: 300px; margin-bottom: 1rem;" />
+    <img src="./images/broken-vase.png" alt="Cracked vase without bloom" />
     <div class="content-block">
       <ul>
         <li> Emotional drain and disconnection</li>
@@ -400,10 +682,9 @@ nav a {
     </div>
   </section>
 
-  <section>
+  <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">What’s Possible</h2>
-    <!-- updated -->
-    <img src="./images/sunrise-vase.png" alt="Blooming vase at sunrise" style="max-width: 300px; margin-bottom: 1rem;" />
+    <img src="./images/sunrise-vase.png" alt="Blooming vase at sunrise" />
     <div class="content-block">
       <ul>
         <li> Feel deeply calm and clear</li>
@@ -414,25 +695,28 @@ nav a {
     </div>
   </section>
 
-  <section>
+  <section data-aos="fade-up" data-aos-delay="100">
     <h2 class="section-title">Let’s Begin, Shall We?</h2>
-  <a
-  href="#"
-  class="btn-cta"
-  onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
->
-  Book Your Free Clarity Call
-</a>
-
-
-
+    <a
+      href="#"
+      class="btn-cta"
+      onclick="Calendly.initPopupWidget({ url: 'https://calendly.com/angela-edw4rds-heartdefense/clarity-call' }); return false;"
+    >
+      Book Your Free Clarity Call
+    </a>
   </section>
 
   <footer>
-    <!-- updated -->
-    <img src="./images/logo-tagline.png" alt="The Reconstructionists - Rebuilding Lives" style="max-width: 280px; height: auto;" />
+    <img src="./images/logo-tagline.png" alt="The Reconstructionists - Rebuilding Lives" />
     <p>© 2025 The Reconstructionists</p>
   </footer>
 
+  <script>
+    // Initialize AOS
+    AOS.init({
+      once: true, // animations once
+      mirror: false, // whether elements should animate out while scrolling past them
+    });
+  </script>
 </body>
 </html>
