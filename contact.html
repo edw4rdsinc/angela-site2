@@ -4,60 +4,205 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact | The Reconstructionists</title>
+
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #F5F1E7;
-      /* handmade paper texture */
-      background-image: url('textures/handmade-paper.png');
-      background-repeat: repeat;
-      background-size: auto;
-      color: #333;
-      line-height: 1.7;
-      padding: 2rem;
-      position: relative;
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Variables */
+    :root {
+      --restoration-white: #F5F1E7;
+      --burnt-sienna-clay: #C2653E;
+      --dark-text: #333;
+      --light-text: #F5F1E7;
+      --gray-text: #666;
+      --light-gray-text: #999;
+      --section-bg-light: #F8F6F2;
+      --section-bg-highlight: #F1EFEC; /* Slightly darker than restoration white for contrast */
+      --border-color: rgba(0, 0, 0, 0.08);
+      --shadow-light: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-medium: 0 8px 20px rgba(0,0,0,0.1);
     }
+
+    /* Global resets & typography */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--section-bg-light);
+      color: var(--dark-text);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      overflow-x: hidden; /* Prevent horizontal scroll from AOS */
+    }
+
     header, footer {
       text-align: center;
       padding: 1rem;
     }
+
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--dark-text);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block; /* For underline */
+      padding-bottom: 0.5rem; /* Space for underline */
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      margin-top: 2.5rem; /* Adjust spacing for section headings */
+    }
+
+    /* Underline for headers */
+    h1::after, h2::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 60px; /* Adjust width as needed */
+      height: 3px;
+      background-color: var(--burnt-sienna-clay);
+      border-radius: 2px;
+    }
+
+    /* Navigation */
+    nav {
+      background-color: var(--restoration-white);
+      padding: 1rem 0;
+      box-shadow: var(--shadow-light);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
     nav ul {
       list-style: none;
+      margin: 0;
       padding: 0;
       display: flex;
+      flex-wrap: wrap; /* Allow wrapping on small screens */
       justify-content: center;
       gap: 1.5rem;
     }
+
     nav a {
       text-decoration: none;
-      color: #333;
-      font-weight: bold;
+      color: var(--dark-text);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
+
+    nav a:hover {
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
+    }
+
+    /* Main Content Container */
     main {
-      max-width: 700px;
+      max-width: 800px;
       margin: 2rem auto;
-      background: rgba(255,255,255,0.9);
-      padding: 2rem;
-      border-radius: 8px;
+      background-color: var(--restoration-white);
+      padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-medium);
+      border: 1px solid var(--border-color);
+      text-align: center; /* Center inline-block children like h1 and h2 */
     }
-    h1, h2 {
+
+    /* Individual Sections within Main */
+    main section {
+      margin-bottom: 3rem;
+      padding: 0; /* Remove default section padding, main handles it */
+      text-align: center; /* Centered text for all sections */
+    }
+
+    main section p {
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--dark-text);
+    }
+
+    /* CTA Button */
+    a.button {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.9rem 2rem;
+      background-color: var(--burnt-sienna-clay);
+      color: var(--light-text);
+      text-decoration: none;
+      border-radius: 2.5rem;
       text-align: center;
-      color: #3a2e2a;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-medium);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 1rem;
+    }
+
+    a.button:hover {
+      background-color: #A85A36; /* Slightly darker burnt sienna */
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      background-color: var(--section-bg-highlight);
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+
+    footer img {
+      max-width: 250px;
+      height: auto;
       margin-bottom: 1rem;
     }
-    section {
-      margin-bottom: 2rem;
+
+    footer p {
+      font-size: 0.85rem;
+      color: var(--gray-text);
+      margin: 0;
     }
-    .button {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background-color: #c2653e;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      text-align: center;
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav a {
+        padding: 0.7rem 1rem;
+      }
+      h1 {
+        font-size: clamp(2rem, 8vw, 3rem);
+      }
+      h2 {
+        font-size: clamp(1.6rem, 7vw, 2.5rem);
+      }
+      main section p {
+        font-size: 1rem;
+      }
+      a.button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.95rem;
+      }
     }
   </style>
 </head>
@@ -75,10 +220,10 @@
   </header>
 
   <main>
-    <h1>Contact</h1>
-    <h2>Let’s Begin With a Conversation</h2>
+    <h1 data-aos="fade-up">Contact</h1>
+    <h2 data-aos="fade-up" data-aos-delay="100">Let’s Begin With a Conversation</h2>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="200">
       <p>If you’ve made it this far, maybe something in you is stirring —<br>
       a question, a curiosity, a quiet hope.</p>
       <p>You don’t need to have it all figured out.<br>
@@ -87,21 +232,21 @@
       So if you’re wondering whether coaching with me is right for you, I invite you to reach out.</p>
     </section>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="100">
       <h2>🤍 Book a Free Clarity Call</h2>
       <p>Let’s talk about what’s on your heart — no pressure, no expectations.<br>
       I’ll listen. You’ll decide.</p>
       <a class="button" href="https://calendly.com/angela-edw4rds-heartdefense/clarity-call">Schedule Your Call</a>
     </section>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="100">
       <h2>✉️ Prefer to send a message?</h2>
       <p>You can also email me directly at:<br>
       <strong>angela@thereconstructionists.co</strong></p>
       <p>I respond personally, usually within 48 hours.</p>
     </section>
 
-    <section>
+    <section data-aos="fade-up" data-aos-delay="100">
       <h2>🕊️ A Note About Privacy</h2>
       <p>Everything you share stays between us.<br>
       This is a confidential space, and your story is always honored.</p>
@@ -109,7 +254,16 @@
   </main>
 
   <footer>
+    <img src="./images/logo-tagline.png" alt="The Reconstructionists - Rebuilding Lives" />
     <p>&copy; 2025 The Reconstructionists</p>
   </footer>
+
+  <script>
+    // Initialize AOS
+    AOS.init({
+      once: true, // animations once
+      mirror: false, // whether elements should animate out while scrolling past them
+    });
+  </script>
 </body>
 </html>
