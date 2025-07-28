@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Angela | The Reconstructionists</title>
 
-  <!-- AOS Library for scroll animations -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
@@ -120,6 +119,7 @@
       border-radius: 1rem;
       box-shadow: var(--shadow-medium);
       border: 1px solid var(--border-color);
+      text-align: center; /* FIX: Added to center inline-block children like h1 and h2 */
     }
 
     /* Individual Sections within Main */
@@ -238,7 +238,6 @@
   </header>
 
   <main>
-    <!-- Hero Image -->
     <section class="hero-image" data-aos="fade-up" data-aos-duration="1000">
       <img
         src="./images/kintsugi-vase-with-lilies.png"
