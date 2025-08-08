@@ -136,6 +136,19 @@
       color: var(--dark-text);
     }
 
+    /* Styling for the new mailto link */
+    main section p a {
+        color: var(--burnt-sienna-clay);
+        font-weight: 500;
+        text-decoration: underline;
+        transition: color 0.3s ease;
+    }
+
+    main section p a:hover {
+        color: #A85A36; /* Slightly darker burnt sienna */
+    }
+
+
     /* CTA Button */
     a.button {
       display: inline-block;
@@ -241,8 +254,8 @@
 
     <section data-aos="fade-up" data-aos-delay="100">
       <h2>✉️ Prefer to send a message?</h2>
-      <p>You can also email me directly at:<br>
-      <strong>angela@thereconstructionists.co</strong></p>
+      <!-- MODIFIED SECTION -->
+      <p>You can also <a href="mailto:angela@edw4rds.com">email me</a> directly.</p>
       <p>I respond personally, usually within 48 hours.</p>
     </section>
 
