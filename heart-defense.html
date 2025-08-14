@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartDefense Quiz | The Reconstructionists</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Using variables from your site's theme for a consistent look */
+        :root {
+            --restoration-white: #F5F1E7;
+            --burnt-sienna-clay: #C2653E;
+            --dark-text: #333;
+            --gray-text: #666;
+            --section-bg-light: #F8F6F2;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--section-bg-light);
+            color: var(--dark-text);
+        }
+
+        /* Styling the quiz container to match your site's aesthetic */
+        #quiz-container {
+            background-color: var(--restoration-white);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dark-text);
+        }
+
+        p {
+            color: var(--gray-text);
+        }
+
+        /* Custom input styles to match your theme */
+        .custom-input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--dark-text);
+            transition: border-color 0.3s ease;
+            border-radius: 0; /* Inputs should not have rounded corners if they only have a bottom border */
+        }
+        .custom-input:focus {
+            outline: none;
+            border-bottom-color: var(--burnt-sienna-clay);
+        }
+        .custom-input::placeholder {
+            color: #999;
+        }
+        
+        /* Custom select styles */
+        .custom-select {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--dark-text);
+        }
+
+        /* Button styling to match your site's CTA buttons */
+        .btn {
+            font-weight: 600;
+            padding: 0.8rem 1.8rem;
+            border-radius: 2.5rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--burnt-sienna-clay);
+            color: var(--restoration-white);
+            box-shadow: var(--shadow-medium);
+        }
+        .btn-primary:hover {
+            background-color: #A85A36; /* Slightly darker burnt sienna */
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #e9e5dc;
+            color: var(--dark-text);
+        }
+        .btn-secondary:hover {
+            background-color: #dcd7ce;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
+        /* Hide number input spinners for a cleaner look */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Animation for question transitions */
+        .question-slide {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+        .question-slide.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            position: absolute;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="relative w-full max-w-2xl mx-auto p-6 md:p-8 rounded-lg overflow-hidden">
+        
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="bg-gray-200 rounded-full h-1.5">
+                <div id="progress-bar" class="bg-[var(--burnt-sienna-clay)] rounded-full h-1.5" style="width: 0%; transition: width 0.5s ease-in-out;"></div>
+            </div>
+        </div>
+
+        <form id="quiz-form">
+            <div id="questions-wrapper" class="relative min-h-[220px]">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </form>
+
+        <!-- Navigation Buttons -->
+        <div id="navigation-buttons" class="mt-8 flex justify-between items-center">
+            <button type="button" id="prev-btn" class="btn btn-secondary">
+                Back
+            </button>
+            <button type="button" id="next-btn" class="btn btn-primary">
+                Next
+            </button>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="mt-4 text-red-600 text-sm font-medium text-center h-5"></div>
+    </div>
+
+    <script>
+        // --- n8n Integration ---
+        const N8N_WEBHOOK_URL = "https://n8n.edw4rds.com/webhook/1e7af52d-25ec-4423-ba77-793b445bef09"; 
+
+        // --- Quiz Configuration ---
+        const quizQuestions = [
+            {
+                type: 'welcome',
+                title: "Welcome to Heart Defense",
+                description: "Let's get to know you better."
+            },
+            {
+                type: 'text',
+                key: 'name',
+                title: "What's your full name?",
+                placeholder: "Type your answer here...",
+                required: true 
+            },
+            {
+                type: 'text',
+                key: 'pinkName',
+                title: "What is your Pink Name?",
+                placeholder: "Type your answer here...",
+                required: false
+            },
+            {
+                type: 'text',
+                key: 'blueName',
+                title: "What is your Blue Name?",
+                placeholder: "Type your answer here...",
+                required: false
+            },
+            {
+                type: 'text',
+                key: 'dagger',
+                title: "What is your Dagger?",
+                placeholder: "Type your answer here...",
+                required: false
+            },
+            {
+                type: 'email',
+                key: 'email',
+                title: "What's your email address?",
+                placeholder: "name@example.com",
+                required: true 
+            },
+            {
+                type: 'tel',
+                key: 'phone',
+                title: "What's your phone number?",
+                placeholder: "(123) 456-7890",
+                required: true
+            },
+            {
+                type: 'number',
+                key: 'age',
+                title: "How old are you?",
+                placeholder: "Enter your age",
+                required: false 
+            },
+            {
+                type: 'select',
+                key: 'relationshipStatus',
+                title: "What is your relationship status?",
+                options: ["Single", "In a relationship", "Engaged", "Married", "It's complicated", "Prefer not to say"],
+                required: false 
+            },
+            {
+                type: 'address',
+                key: 'address',
+                title: "What is your mailing address?",
+                required: true,
+                fields: [
+                    { key: 'address1', placeholder: 'Address line 1', required: true },
+                    { key: 'address2', placeholder: 'Address line 2 (optional)', required: false },
+                    { key: 'city', placeholder: 'City / Town', required: true },
+                    { key: 'state', placeholder: 'State / Province', required: true },
+                    { key: 'zip', placeholder: 'ZIP / Postal Code', required: true },
+                    { key: 'country', placeholder: 'Country', required: true }
+                ]
+            },
+            {
+                type: 'final',
+                title: "Thank you!",
+                description: "You're all set. Please click the button below to schedule your appointment.",
+                buttonText: "Schedule Now",
+                calendlyLink: "https://calendly.com/angela-edw4rds-heartdefense/heartdefense-women"
+            }
+        ];
+
+        // --- DOM Elements ---
+        const questionsWrapper = document.getElementById('questions-wrapper');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const errorMessage = document.getElementById('error-message');
+        const navButtons = document.getElementById('navigation-buttons');
+
+        // --- State ---
+        let currentQuestionIndex = 0;
+        const userAnswers = {};
+
+        // --- Functions ---
+
+        async function sendDataToN8n() {
+            if (!N8N_WEBHOOK_URL) {
+                console.warn("n8n webhook URL is not set. Skipping data submission.");
+                return;
+            }
+            try {
+                // 'no-cors' mode sends the request without waiting for a response, which is fine for webhooks and avoids CORS issues.
+                await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userAnswers),
+                });
+                console.log("Attempted to send data to n8n.");
+            } catch (error) {
+                // Note: Catch block may not trigger for network errors in 'no-cors' mode.
+                console.error("Could not send data to n8n:", error);
+            }
+        }
+
+        function renderQuestions() {
+            questionsWrapper.innerHTML = '';
+            quizQuestions.forEach((q, index) => {
+                const slide = document.createElement('div');
+                slide.className = `question-slide w-full ${index === 0 ? '' : 'hidden'}`;
+                slide.dataset.index = index;
+                
+                let content = '';
+                const titleHtml = `<h2 class="text-3xl font-bold mb-3">${q.title}</h2>`;
+                const descriptionHtml = q.description ? `<p class="mb-6 text-base">${q.description}</p>` : '';
+
+                switch (q.type) {
+                    case 'welcome':
+                        content = `${titleHtml}${descriptionHtml}`;
+                        break;
+                    case 'text':
+                    case 'email':
+                    case 'tel':
+                    case 'number':
+                        content = `
+                            ${titleHtml}
+                            <input type="${q.type}" name="${q.key}" placeholder="${q.placeholder}" class="w-full p-3 custom-input text-2xl" ${q.required ? 'required' : ''}>
+                        `;
+                        break;
+                    case 'select':
+                        const optionsHtml = q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                        content = `
+                            ${titleHtml}
+                            <select name="${q.key}" class="w-full p-3 custom-select text-xl rounded-md" ${q.required ? 'required' : ''}>
+                                <option value="" disabled selected>Choose an option...</option>
+                                ${optionsHtml}
+                            </select>
+                        `;
+                        break;
+                    case 'address':
+                          const fieldsHtml = q.fields.map(field => `
+                            <input type="text" name="${field.key}" placeholder="${field.placeholder}" class="w-full p-2 custom-input text-lg mb-4" ${field.required ? 'required' : ''}>
+                          `).join('');
+                          content = `${titleHtml}${fieldsHtml}`;
+                          break;
+                    case 'final':
+                        content = `
+                            ${titleHtml}
+                            ${descriptionHtml}
+                            <a id="schedule-btn" href="${q.calendlyLink}" target="_blank" class="block w-full text-center mt-8 btn btn-primary text-lg">
+                                ${q.buttonText}
+                            </a>
+                        `;
+                        break;
+                }
+                slide.innerHTML = content;
+                questionsWrapper.appendChild(slide);
+            });
+        }
+
+        function showQuestion(index) {
+            document.querySelectorAll('.question-slide').forEach((slide, i) => {
+                slide.classList.toggle('hidden', i !== index);
+            });
+            
+            updateProgressBar();
+            updateNavigationButtons();
+            
+            const currentQuestion = quizQuestions[index];
+            if (currentQuestion.type === 'final') {
+                updateFinalSlideLinks();
+            } else {
+                // Automatically focus the first input field of the current question
+                const firstInput = document.querySelector(`.question-slide[data-index='${index}'] [name]`);
+                if (firstInput) setTimeout(() => firstInput.focus(), 400); // Timeout allows for transition
+            }
+        }
+
+        function updateFinalSlideLinks() {
+            const finalQuestionConfig = quizQuestions.find(q => q.type === 'final');
+            const scheduleBtn = document.getElementById('schedule-btn');
+            const name = userAnswers.name || '';
+            const email = userAnswers.email || '';
+            const calendlyUrl = new URL(finalQuestionConfig.calendlyLink);
+            if (name) calendlyUrl.searchParams.set('name', name);
+            if (email) calendlyUrl.searchParams.set('email', email);
+            scheduleBtn.href = calendlyUrl.toString();
+        }
+
+        function updateProgressBar() {
+            // The progress should be based on the number of actual questions, excluding welcome/final screens
+            const questionSteps = quizQuestions.length - 2;
+            const progress = (currentQuestionIndex > 0) ? ((currentQuestionIndex) / questionSteps) * 100 : 0;
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+        }
+        
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            navButtons.style.display = quizQuestions[currentQuestionIndex].type === 'final' ? 'none' : 'flex';
+            nextBtn.textContent = (currentQuestionIndex === quizQuestions.length - 2) ? 'Finish' : 'Next';
+        }
+
+        function validateCurrentQuestion() {
+            const question = quizQuestions[currentQuestionIndex];
+            const slide = document.querySelector(`.question-slide[data-index='${currentQuestionIndex}']`);
+            let isValid = true;
+
+            // Fields that are marked as required must have a value
+            const requiredInputs = slide.querySelectorAll('[required]');
+            for (const input of requiredInputs) {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            // Specifically validate email format if the field has a value
+            const emailInput = slide.querySelector('input[type="email"]');
+            if (emailInput && emailInput.value && !/^\S+@\S+\.\S+$/.test(emailInput.value)) {
+                isValid = false;
+            }
+            
+            errorMessage.textContent = isValid ? '' : 'Please fill out all required fields correctly.';
+            return isValid;
+        }
+
+        function saveCurrentAnswer() {
+            const question = quizQuestions[currentQuestionIndex];
+            const slide = document.querySelector(`.question-slide[data-index='${currentQuestionIndex}']`);
+            
+            if (question.type === 'address') {
+                userAnswers[question.key] = {};
+                slide.querySelectorAll('input').forEach(input => {
+                    userAnswers[question.key][input.name] = input.value;
+                });
+            } else {
+                const input = slide.querySelector('[name]');
+                if (input) userAnswers[question.key] = input.value;
+            }
+        }
+
+        nextBtn.addEventListener('click', async () => {
+            if (validateCurrentQuestion()) {
+                saveCurrentAnswer();
+                // If this is the last question before the final screen, send the data
+                if (currentQuestionIndex === quizQuestions.length - 2) {
+                    await sendDataToN8n();
+                }
+                // Move to the next question/screen
+                if (currentQuestionIndex < quizQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                }
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+                errorMessage.textContent = ''; // Clear error message when going back
+            }
+        });
+        
+        // Allow users to press Enter to proceed
+        questionsWrapper.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault(); // Prevent form submission
+                nextBtn.click();
+            }
+        });
+
+        // --- Initial Load ---
+        renderQuestions();
+        showQuestion(currentQuestionIndex);
+    </script>
+</body>
+</html>
