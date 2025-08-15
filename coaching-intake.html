@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coaching Intake Form</title>
+    <!-- Google Fonts for the new theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <!-- All styling is included in the <style> tag below for simplicity -->
+    <style>
+        :root {
+            /* TheReconstructionists.co Theme */
+            --primary-color: #C2653E; /* Burnt Sienna Clay */
+            --secondary-color: #C8A75C; /* Gold Seam */
+            --background-color: #F5F1E7; /* Restoration White */
+            --text-color: #333333; /* Dark gray text */
+            --input-bg-color: #ffffff;
+            --input-border-color: #DCC7AA; /* Warm Sand */
+            --button-text-color: #ffffff;
+            --error-color: #c23e3e;
+            --font-family-serif: "Lora", serif;
+            --font-family-sans: "Montserrat", sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-serif);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #quiz-container {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--secondary-color); /* Gold Seam for progress */
+            transition: width 0.4s ease-in-out;
+        }
+
+        .quiz-step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .quiz-step.active {
+            display: block;
+        }
+
+        .question-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-number {
+            font-size: 1rem;
+            font-family: var(--font-family-sans);
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            font-family: var(--font-family-sans);
+            margin: 0 0 0.5rem 0;
+            line-height: 1.3;
+        }
+        
+        .required-asterisk {
+            color: var(--error-color);
+            margin-left: 4px;
+            font-weight: 700;
+        }
+
+        .question-description {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            white-space: pre-wrap;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-family: var(--font-family-serif);
+            box-sizing: border-box;
+            background-color: var(--input-bg-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(194, 101, 62, 0.3);
+        }
+        
+        input.error {
+            border-color: var(--error-color);
+            box-shadow: 0 0 0 2px rgba(194, 62, 62, 0.3);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .navigation-buttons {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: var(--font-family-sans);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-transform: uppercase;
+        }
+        
+        .nav-btn:hover {
+            background-color: #a85634;
+        }
+        
+        .nav-btn:active {
+            transform: scale(0.98);
+        }
+
+        .back-btn {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+        .back-btn:hover {
+            background-color: #d1d1d1;
+        }
+        
+        .nav-btn.loading {
+            pointer-events: none;
+            background-color: #a85634;
+        }
+        
+        .nav-btn.loading::after {
+            content: '...';
+            display: inline-block;
+            animation: dots 1s steps(3, end) infinite;
+        }
+        
+        #submit-error {
+            color: var(--error-color);
+            font-family: var(--font-family-sans);
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Opinion Scale & Rating Styles */
+        .rating-container, .opinion-scale-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .rating-item, .opinion-scale-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .rating-item input, .opinion-scale-item input { display: none; }
+        .rating-item label, .opinion-scale-item label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            font-size: 1.1rem;
+            font-family: var(--font-family-sans);
+        }
+        .rating-item input:checked + label, .opinion-scale-item input:checked + label {
+            background-color: var(--primary-color);
+            color: var(--button-text-color);
+            border-color: var(--primary-color);
+        }
+        .opinion-scale-labels {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 1rem;
+            padding: 0 5px;
+        }
+        
+        /* Multiple Choice Styles */
+        .multiple-choice-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid transparent;
+        }
+        .choice-item {
+            display: block;
+        }
+        .choice-item label {
+            display: block;
+            padding: 12px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .choice-item input { display: none; }
+        .choice-item input:checked + label {
+            background-color: rgba(220, 199, 170, 0.3); /* Warm Sand translucent */
+            border-color: var(--secondary-color);
+        }
+        #values-error {
+            color: var(--error-color);
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Fieldset for grouped questions */
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        fieldset .question-group {
+            margin-bottom: 2rem;
+        }
+        fieldset .question-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        /* Styles for Question 30 and 40 */
+        .value-ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .value-ranking-item label {
+            flex-basis: 40%;
+            font-size: 1.1rem;
+        }
+        .value-ranking-item input {
+            flex-grow: 1;
+        }
+        .goal-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <!-- Progress Bar -->
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <!-- HTML Form Structure -->
+        <form id="coaching-form" onsubmit="return false;">
+
+            <!-- Step 0: Welcome Screen -->
+            <div class="quiz-step active">
+                <h1 class="question-title">Thank you for taking the time to fill out The Reconstructionists' intake form.</h1>
+                <p class="question-description">Let's begin, shall we?</p>
+                <div class="navigation-buttons" style="justify-content: flex-end;">
+                    <button type="button" class="nav-btn next-btn">Start</button>
+                </div>
+            </div>
+
+            <!-- Step 1: Name -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.1 →</div>
+                    <label for="name" class="question-title">Name<span class="required-asterisk">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="Type your answer here..." required>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Email -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.2 →</div>
+                    <label for="email" class="question-title">Email<span class="required-asterisk">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="name@example.com" required>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Address (Grouped) -->
+            <div class="quiz-step">
+                <fieldset>
+                    <div class="question-number">1.3 →</div>
+                    <legend class="question-title" style="font-size: 1.75rem; margin-bottom: 2rem;">Address</legend>
+                    <div class="question-group">
+                        <label for="address_line_1" class="question-title">Address</label>
+                        <input type="text" id="address_line_1" name="address_line_1">
+                    </div>
+                    <div class="question-group">
+                        <label for="address_line_2" class="question-title">Address line 2</label>
+                        <input type="text" id="address_line_2" name="address_line_2">
+                    </div>
+                    <div class="question-group">
+                        <label for="city" class="question-title">City/Town</label>
+                        <input type="text" id="city" name="city">
+                    </div>
+                    <div class="question-group">
+                        <label for="state" class="question-title">State/Region/Province</label>
+                        <input type="text" id="state" name="state">
+                    </div>
+                    <div class="question-group">
+                        <label for="zip_code" class="question-title">Zip/Post Code</label>
+                        <input type="text" id="zip_code" name="zip_code">
+                    </div>
+                    <div class="question-group">
+                        <label for="country" class="question-title">Country</label>
+                        <input type="text" id="country" name="country">
+                    </div>
+                </fieldset>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Phone Number -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.4 →</div>
+                    <label for="phone" class="question-title">Phone Number<span class="required-asterisk">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="(201) 555-0123" required>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 5: DOB -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.5 →</div>
+                    <label for="dob" class="question-title">DOB</label>
+                    <input type="date" id="dob" name="dob">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Place of Birth -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.6 →</div>
+                    <label for="pob" class="question-title">Place of Birth</label>
+                    <input type="text" id="pob" name="pob" placeholder="Type your answer here...">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 7: Relationship Status -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.7 →</div>
+                    <label for="relationship_status" class="question-title">Relationship Status</label>
+                    <select id="relationship_status" name="relationship_status">
+                        <option value="">Choose an option...</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Divorced">Divorced</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="In a Relationship">In a Relationship</option>
+                        <option value="Complicated">Complicated</option>
+                    </select>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 8: Name of Significant Other -->
+            <div class="quiz-step" data-question-id="so_name">
+                <div class="question-group">
+                    <div class="question-number">1.8 →</div>
+                    <label for="so_name" class="question-title">Name of Significant Other</label>
+                    <input type="text" id="so_name" name="so_name" placeholder="Type your answer here...">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 9: Anniversary -->
+            <div class="quiz-step" data-question-id="anniversary">
+                <div class="question-group">
+                    <div class="question-number">1.9 →</div>
+                    <label for="anniversary" class="question-title">Anniversary</label>
+                    <input type="date" id="anniversary" name="anniversary">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 10: Children -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.10 →</div>
+                    <label for="children" class="question-title">List children's names, dobs, and genders</label>
+                    <textarea id="children" name="children" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 11: Parents -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.11 →</div>
+                    <label for="parents" class="question-title">List your parents names and dobs</label>
+                    <textarea id="parents" name="parents" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 12: Siblings -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.12 →</div>
+                    <label for="siblings" class="question-title">List your sibling's names, dobs, and genders</label>
+                    <textarea id="siblings" name="siblings" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 13: Work -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.13 →</div>
+                    <label for="workplace" class="question-title">Where do you work?</label>
+                    <input type="text" id="workplace" name="workplace" placeholder="Type your answer here...">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 14: Time there -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.14 →</div>
+                    <label for="work_duration" class="question-title">How long have you been there?</label>
+                    <input type="text" id="work_duration" name="work_duration" placeholder="Type your answer here...">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 15: Role -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.15 →</div>
+                    <label for="work_role" class="question-title">What's your role?</label>
+                    <input type="text" id="work_role" name="work_role" placeholder="Type your answer here...">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 16: Job Satisfaction -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.16 →</div>
+                    <p class="question-title">How satisfied are you with this job?</p>
+                    <div class="opinion-scale-container" data-question-name="job_satisfaction" data-steps="11" data-start-at-zero="true">
+                        <!-- JS will generate 0-10 scale here -->
+                    </div>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 17: Certifications -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">1.17 →</div>
+                    <label for="certs" class="question-title">What degree and/or professional certifications do you have?</label>
+                    <textarea id="certs" name="certs" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Coachability Statement -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <h2 class="question-title">Answer the following questions related to your coachability.</h2>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">Continue</button>
+                </div>
+            </div>
+
+            <!-- This is a placeholder, JS will insert the rating questions before this element -->
+            <div id="ratings-placeholder"></div>
+
+            <!-- Values Statement -->
+            <div class="quiz-step">
+                 <div class="question-group">
+                    <h2 class="question-title">What are your values, and how do they show up in your life?</h2>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 29: Core Values -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">3.1 →</div>
+                    <p class="question-title">Choose your top 10 core values</p>
+                    <div id="values-error">Please select exactly 10 values.</div>
+                    <div class="multiple-choice-container">
+                        <!-- JS will generate choices here -->
+                    </div>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn" id="values-next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 30: How values show up -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">3.2 →</div>
+                    <label class="question-title">How are your top 10 values showing up in your life? List them in order of importance 1-10, then write next to them what value they show up as in everyday life.</label>
+                    <p class="question-description">Example: Relationships are #2 but they show up as #10 in my everyday life.</p>
+                    <!-- This div will be populated by JS -->
+                    <div id="values-ranking-container"></div>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Deeper Statement -->
+            <div class="quiz-step">
+                 <div class="question-group">
+                    <h2 class="question-title">Let's go a little deeper.</h2>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 31: Enneagram -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.1 →</div>
+                    <label for="enneagram" class="question-title">What's your enneagram type? Click the link, take the assessment and post your results.</label>
+                    <p class="question-description"><a href="https://www.eclecticenergies.com/enneagram/dotest" target="_blank">https://www.eclecticenergies.com/enneagram/dotest</a></p>
+                    <input type="text" id="enneagram" name="enneagram" placeholder="Type your answer here...">
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- Step 32: What do you want? -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.2 →</div>
+                    <label for="what_you_want" class="question-title">What do you want?</label>
+                    <textarea id="what_you_want" name="what_you_want" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 33: Inspired -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.3 →</div>
+                    <label for="inspired" class="question-title">What Inspired you to use a coach?</label>
+                    <textarea id="inspired" name="inspired" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 34: Goals -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.4 →</div>
+                    <label for="goals" class="question-title">What are your top 3 life goals. Connect them to your purpose.</label>
+                    <textarea id="goals" name="goals" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 35: Time Wasters -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.5 →</div>
+                    <label for="time_wasters" class="question-title">List your top 5 time wasters:</label>
+                    <p class="question-description">i.e. video games, social media, movies, etc.</p>
+                    <textarea id="time_wasters" name="time_wasters" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 36: Passionate -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.6 →</div>
+                    <label for="passionate" class="question-title">What are you most passionate about right now?</label>
+                    <textarea id="passionate" name="passionate" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 37: Out of Balance -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.7 →</div>
+                    <label for="out_of_balance" class="question-title">What area in your life is out of balance? Explain</label>
+                    <textarea id="out_of_balance" name="out_of_balance" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 38: Coaching Worked -->
+            <div class="quiz-step">
+                <div class="question-group">
+                    <div class="question-number">4.8 →</div>
+                    <label for="coaching_worked" class="question-title">What are three ways you'll know that coaching worked?</label>
+                     <p class="question-description">What are you hoping to get out of it?</p>
+                    <textarea id="coaching_worked" name="coaching_worked" placeholder="Type your answer here..."></textarea>
+                </div>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+            
+            <!-- Step 39: Life Components (Grouped) -->
+            <div class="quiz-step" id="life-components-step">
+                <fieldset>
+                    <div class="question-number">5.1 →</div>
+                    <legend class="question-title" style="font-size: 1.75rem; margin-bottom: 2rem;">On a scale of 1-10 rank your level of satisfaction with each of these 8 life components.</legend>
+                    <!-- JS will generate the 8 opinion scales here -->
+                </fieldset>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn back-btn">Back</button>
+                    <button type="button" class="nav-btn next-btn">OK</button>
+                </div>
+            </div>
+
+            <!-- This is a placeholder, JS will insert the goal questions before this element -->
+            <div id="goals-placeholder"></div>
+
+            <!-- Final Step / Thank You Screen: Calendly -->
+            <div class="quiz-step">
+                <div class="question-group" style="text-align: center;">
+                    <h2 class="question-title">Thank You!</h2>
+                    <p class="question-description">Your intake form has been submitted. Please schedule a time to meet below.</p>
+                    <!-- Calendly inline widget begin -->
+                    <div class="calendly-inline-widget" data-url="https://calendly.com/angela-edw4rds-heartdefense/heartdefense-women-clone?background_color=f5f1e7&primary_color=c2653e" style="min-width:320px;height:700px;"></div>
+                    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+                    <!-- Calendly inline widget end -->
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- All interactivity is handled by the <script> tag below -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('coaching-form');
+            const ratingsPlaceholder = document.getElementById('ratings-placeholder'); 
+            const goalsPlaceholder = document.getElementById('goals-placeholder');
+
+            const ratingQuestions = [
+                { title: "This is the right time for me to engage in personal and professional growth development.", description: "1) Less True\n3) More True" },
+                { title: "Working with a professional coach is a proactive step that I'm ready for.", description: "1) Less True\n3) More True" },
+                { title: "I commit to being on time and prepared for all calls and appointments.", description: "1) Less True\n3) More True" },
+                { title: "I agree to do the work and complete the exercises.", description: "1) Less True\n3) More True" },
+                { title: "I am willing to apply new concepts and engage in different ways of learning and creating shifts to enhance my growth.", description: "1) Less True\n3) More True" },
+                { title: "I will speak honestly to the coach, telling the whole truth.", description: "1) Less True\n3) More True" },
+                { title: "If I feel that I am not getting what I need from coaching, I will share this as soon as I sense it and ask for what I want and need from the coaching relationship.", description: "1) Less True\n3) More True" },
+                { title: "I am willing to recognize, interrupt, and change the self-imposed limitations, beliefs, and behaviors which limit me.", description: "1) Less True\n3) More True" },
+                { title: "I will communicate and express myself. I’ll say what is working and what needs to work better.", description: "1) Less True\n3) More True" },
+                { title: "I am willing to seek additional resources, if needed.", description: "1) Less True\n3) More True" },
+                { title: "I see coaching as a valuable investment for my present and my future", description: "1) Less True\n3) More True" }
+            ];
+
+            const lifeComponents = ["Social", "Career", "Financial", "Spiritual", "Physical", "Mental", "Emotional", "Relational"];
+            const fiveYearGoals = ["Relationship/Family", "Spiritual", "Physical/Health", "Mental/Intellectual/Educational", "Emotional", "Social", "Financial", "Career"];
+
+            // --- DYNAMIC QUESTION GENERATION ---
+
+            ratingQuestions.forEach((q, index) => {
+                const step = document.createElement('div');
+                step.className = 'quiz-step';
+                step.innerHTML = `
+                    <div class="question-group">
+                        <div class="question-number">2.${index + 1} →</div>
+                        <p class="question-title">${q.title}</p>
+                        <p class="question-description">${q.description}</p>
+                        <div class="rating-container">
+                            <div class="rating-item"><input type="radio" id="q_rating_${index}_1" name="coachability_rating_${index+1}" value="1"><label for="q_rating_${index}_1">1</label></div>
+                            <div class="rating-item"><input type="radio" id="q_rating_${index}_2" name="coachability_rating_${index+1}" value="2"><label for="q_rating_${index}_2">2</label></div>
+                            <div class="rating-item"><input type="radio" id="q_rating_${index}_3" name="coachability_rating_${index+1}" value="3"><label for="q_rating_${index}_3">3</label></div>
+                        </div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button type="button" class="nav-btn back-btn">Back</button>
+                        <button type="button" class="nav-btn next-btn">OK</button>
+                    </div>`;
+                ratingsPlaceholder.parentNode.insertBefore(step, ratingsPlaceholder);
+            });
+            
+            const lifeComponentsFieldset = document.querySelector('#life-components-step fieldset');
+            if (lifeComponentsFieldset) {
+                lifeComponents.forEach(comp => {
+                    const group = document.createElement('div');
+                    group.className = 'question-group';
+                    group.innerHTML = `
+                        <label class="question-title">${comp}</label>
+                        <div class="opinion-scale-container" data-question-name="life_comp_${comp.toLowerCase()}" data-steps="10" data-start-at-zero="false"></div>
+                        <div class="opinion-scale-labels"><span>Very Dissatisfied</span><span>Very Satisfied</span></div>`;
+                    lifeComponentsFieldset.appendChild(group);
+                });
+            }
+            
+            // Generate 5-Year Goal questions as individual steps
+            fiveYearGoals.forEach((goal, index) => {
+                const step = document.createElement('div');
+                step.className = 'quiz-step';
+                let inputsHtml = `<div class="goal-inputs">`;
+                for(let i=1; i<=4; i++) {
+                    inputsHtml += `<input type="text" name="goal_${goal.toLowerCase().replace(/[\/\s]/g, '_')}_${i}" placeholder="Goal #${i}" aria-label="Goal #${i} for ${goal}">`;
+                }
+                inputsHtml += '</div>';
+                
+                step.innerHTML = `
+                    <div class="question-group">
+                        <div class="question-number">5.${index + 2} →</div>
+                        <label class="question-title">What are your ${goal} goals over the next 5 years?</label>
+                        ${inputsHtml}
+                    </div>
+                    <div class="navigation-buttons">
+                        <button type="button" class="nav-btn back-btn">Back</button>
+                        ${index === fiveYearGoals.length - 1 ? '<button type="button" class="nav-btn" id="submit-btn">Submit</button>' : '<button type="button" class="nav-btn next-btn">OK</button>'}
+                    </div>
+                `;
+                goalsPlaceholder.parentNode.insertBefore(step, goalsPlaceholder);
+            });
+
+
+            // --- CORE LOGIC ---
+
+            const quizSteps = document.querySelectorAll('.quiz-step');
+            const nextButtons = document.querySelectorAll('.next-btn');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const progressBar = document.getElementById('progress-bar');
+            const submitBtn = document.getElementById('submit-btn');
+            const relationshipStatusSelect = document.getElementById('relationship_status');
+
+            let currentStep = 0;
+            let totalProgressSteps = quizSteps.length - 2;
+
+            function updateSkippedSteps() {
+                const status = relationshipStatusSelect.value;
+                const toSkip = ['Single', 'Divorced', 'Widowed'].includes(status);
+                document.querySelector('[data-question-id="so_name"]').dataset.skip = toSkip;
+                document.querySelector('[data-question-id="anniversary"]').dataset.skip = toSkip;
+            }
+
+            function showStep(stepIndex) {
+                quizSteps.forEach((step, index) => step.classList.toggle('active', index === stepIndex));
+                updateProgressBar();
+            }
+            
+            function saveProgress() {
+                const data = {};
+                const formData = new FormData(form);
+                for (let [key, value] of formData.entries()) {
+                    if (key === 'core_values') {
+                        if (!data[key]) data[key] = [];
+                        data[key].push(value);
+                    } else {
+                        data[key] = value;
+                    }
+                }
+                const progress = {
+                    step: currentStep,
+                    answers: data
+                };
+                localStorage.setItem('coachingIntakeProgress', JSON.stringify(progress));
+            }
+
+            function loadProgress() {
+                const savedProgress = localStorage.getItem('coachingIntakeProgress');
+                if (savedProgress) {
+                    const progress = JSON.parse(savedProgress);
+                    const answers = progress.answers;
+                    for (const key in answers) {
+                        const elements = form.elements[key];
+                        if (elements) {
+                            if (key === 'core_values') {
+                                answers[key].forEach(value => {
+                                    const checkbox = form.querySelector(`input[name="core_values"][value="${value}"]`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            } else if (elements.type === 'radio') {
+                                const radio = form.querySelector(`input[name="${key}"][value="${answers[key]}"]`);
+                                if (radio) radio.checked = true;
+                            } else {
+                                elements.value = answers[key];
+                            }
+                        }
+                    }
+                    currentStep = progress.step || 0;
+                    updateSkippedSteps(); // Apply conditional logic based on loaded data
+                }
+            }
+
+            function updateProgressBar() {
+                const visibleSteps = Array.from(quizSteps).filter(step => !step.dataset.skip);
+                const currentVisibleIndex = visibleSteps.indexOf(quizSteps[currentStep]);
+                const totalVisible = visibleSteps.length - 2; // Exclude welcome and thank you
+
+                if (currentVisibleIndex > 0 && currentVisibleIndex <= totalVisible) {
+                    progressBar.style.width = `${((currentVisibleIndex - 1) / (totalVisible-1)) * 100}%`;
+                } else if (currentVisibleIndex > totalVisible) {
+                    progressBar.style.width = `100%`;
+                } else {
+                    progressBar.style.width = '0%';
+                }
+            }
+
+            nextButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const currentInputs = quizSteps[currentStep].querySelectorAll('input[required]');
+                    let allValid = true;
+                    currentInputs.forEach(input => {
+                        if (!input.value) {
+                            input.classList.add('error');
+                            allValid = false;
+                        } else {
+                            input.classList.remove('error');
+                        }
+                    });
+
+                    if (!allValid) return;
+
+                    let nextStep = currentStep + 1;
+                    while(nextStep < quizSteps.length && quizSteps[nextStep].dataset.skip === 'true') {
+                        nextStep++;
+                    }
+
+                    if (nextStep < quizSteps.length) {
+                        currentStep = nextStep;
+                        showStep(currentStep);
+                        saveProgress();
+                    }
+                });
+            });
+
+            backButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    let prevStep = currentStep - 1;
+                    while(prevStep > 0 && quizSteps[prevStep].dataset.skip === 'true') {
+                        prevStep--;
+                    }
+                    if (prevStep >= 0) {
+                        currentStep = prevStep;
+                        showStep(currentStep);
+                        saveProgress();
+                    }
+                });
+            });
+            
+            relationshipStatusSelect.addEventListener('change', updateSkippedSteps);
+            
+            // --- SPECIAL HANDLERS ---
+
+            document.querySelectorAll('.opinion-scale-container').forEach(container => {
+                const name = container.dataset.questionName;
+                const steps = parseInt(container.dataset.steps);
+                const startAtZero = container.dataset.startAtZero === 'true';
+                const start = startAtZero ? 0 : 1;
+                const end = startAtZero ? steps - 1 : steps;
+                for (let i = start; i <= end; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'opinion-scale-item';
+                    item.innerHTML = `<input type="radio" id="${name}_${i}" name="${name}" value="${i}"><label for="${name}_${i}">${i}</label>`;
+                    container.appendChild(item);
+                }
+            });
+
+            const values = ["Achievement", "Adventure", "Affection", "Balance", "Beauty", "Children", "Commitment", "Communication", "Competition", "Cooperation", "Creativity", "Economic Security", "Education", "Empowerment", "Excellence", "Fame", "Family", "Freedom", "Friendship", "Fun", "God", "Happifness", "Health/Fitness", "Helpfulness", "Honesty", "Independence", "Inner Harmony", "Integrity", "Intimacy", "Involvement", "Career", "Learning", "Leisure", "Liberty", "Love", "Loyalty", "Marriage", "Money", "Nature", "Order", "Peace", "Pleasure", "Power", "Purpose", "Recognition", "Responsibility", "Romance", "Security", "Self-Confidence", "Self-Expression", "Self-Improvement", "Self-Respect", "Solitude", "Spirituality", "Trust", "Unity", "Valor", "Variety", "Wealth", "Wholeness", "Wisdom"];
+            const valuesContainer = document.querySelector('.multiple-choice-container');
+            if (valuesContainer) {
+                values.forEach((value, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'choice-item';
+                    item.innerHTML = `<input type="checkbox" id="value_${index}" name="core_values" value="${value}"><label for="value_${index}">${value}</label>`;
+                    valuesContainer.appendChild(item);
+                });
+            }
+            
+            const valueCheckboxes = document.querySelectorAll('input[name="core_values"]');
+            const valuesNextBtn = document.getElementById('values-next-btn');
+            const valuesError = document.getElementById('values-error');
+            const valuesRankingContainer = document.getElementById('values-ranking-container');
+
+            if (valuesNextBtn) {
+                valueCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        const checkedCount = document.querySelectorAll('input[name="core_values"]:checked').length;
+                        if (checkedCount > 10) checkbox.checked = false;
+                    });
+                });
+                
+                valuesNextBtn.addEventListener('click', (e) => {
+                     const checkedCheckboxes = document.querySelectorAll('input[name="core_values"]:checked');
+                     if (checkedCheckboxes.length !== 0 && checkedCheckboxes.length !== 10) {
+                         e.stopPropagation();
+                         valuesError.style.display = 'block';
+                     } else {
+                         valuesError.style.display = 'none';
+                         let rankingHtml = '';
+                         checkedCheckboxes.forEach(box => {
+                             const valueName = box.value;
+                             const inputName = `value_rank_${valueName.replace(/\s/g, '_')}`;
+                             rankingHtml += `
+                                <div class="value-ranking-item">
+                                    <label for="${inputName}">${valueName}</label>
+                                    <input type="text" id="${inputName}" name="${inputName}" placeholder="Enter rank and how it shows up..." aria-label="Rank for ${valueName}">
+                                </div>`;
+                         });
+                         valuesRankingContainer.innerHTML = rankingHtml;
+                     }
+                });
+            }
+
+            if (submitBtn) {
+                submitBtn.addEventListener('click', () => {
+                    submitBtn.classList.add('loading');
+                    submitBtn.textContent = 'Submitting';
+                    const errorDiv = document.getElementById('submit-error');
+                    if(errorDiv) errorDiv.style.display = 'none';
+
+                    const formData = new FormData(form);
+                    const data = {};
+                    
+                    for (let [key, value] of formData.entries()) {
+                        if (!value) continue;
+                        if (key === 'core_values') {
+                            if (!data[key]) data[key] = [];
+                            data[key].push(value);
+                            continue;
+                        }
+                        if (key.startsWith('value_rank_')) {
+                            if (!data.value_rankings) data.value_rankings = {};
+                            const valueName = key.replace('value_rank_', '').replace(/_/g, ' ');
+                            data.value_rankings[valueName] = value;
+                            continue;
+                        }
+                        if (key.startsWith('goal_')) {
+                            if (!data.five_year_goals) data.five_year_goals = {};
+                            const parts = key.split('_');
+                            const category = parts.slice(1, -1).join('_').replace(/_/g, ' ');
+                            if (!data.five_year_goals[category]) data.five_year_goals[category] = [];
+                            data.five_year_goals[category].push(value);
+                            continue;
+                        }
+                        data[key] = value;
+                    }
+                    
+                    const webhookUrl = 'https://n8n.edw4rds.com/webhook/303bd3a2-917e-4552-a621-aa6e84f9c62b';
+
+                    fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                        mode: 'no-cors'
+                    })
+                    .then(() => {
+                        localStorage.removeItem('coachingIntakeProgress');
+                        let nextStep = currentStep + 1;
+                        while(nextStep < quizSteps.length && quizSteps[nextStep].dataset.skip === 'true') {
+                            nextStep++;
+                        }
+                        if (nextStep < quizSteps.length) {
+                            currentStep = nextStep;
+                            showStep(currentStep);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Submission error:', error);
+                        if(errorDiv) {
+                           errorDiv.textContent = 'There was a network error. Please try again.';
+                           errorDiv.style.display = 'block';
+                        }
+                        submitBtn.classList.remove('loading');
+                        submitBtn.textContent = 'Submit';
+                    });
+                });
+            }
+
+            loadProgress();
+            showStep(currentStep);
+        });
+    </script>
+</body>
+</html>
