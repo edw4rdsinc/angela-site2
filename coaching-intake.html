@@ -1102,10 +1102,14 @@
                     fetch(webhookUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data),
-                        mode: 'no-cors'
+                        body: JSON.stringify(data)
                     })
-                    .then(() => {
+                    .then(response => {
+                        if (!response.ok) {
+                            // If the server responds with an error status, handle it here
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        // If the response is ok, we can proceed
                         localStorage.removeItem('coachingIntakeProgress');
                         let nextStep = currentStep + 1;
                         while(nextStep < quizSteps.length && quizSteps[nextStep].dataset.skip === 'true') {
