@@ -806,7 +806,7 @@
                 { title: "I will speak honestly to the coach, telling the whole truth.", description: "1) Less True\n3) More True" },
                 { title: "If I feel that I am not getting what I need from coaching, I will share this as soon as I sense it and ask for what I want and need from the coaching relationship.", description: "1) Less True\n3) More True" },
                 { title: "I am willing to recognize, interrupt, and change the self-imposed limitations, beliefs, and behaviors which limit me.", description: "1) Less True\n3) More True" },
-                { title: "I will communicate and express myself. I’ll say what is working and what needs to work better.", description: "1) Less True\n3) More True" },
+                { title: "I will communicate and express myself. I'll say what is working and what needs to work better.", description: "1) Less True\n3) More True" },
                 { title: "I am willing to seek additional resources, if needed.", description: "1) Less True\n3) More True" },
                 { title: "I see coaching as a valuable investment for my present and my future", description: "1) Less True\n3) More True" }
             ];
@@ -885,7 +885,6 @@
             const relationshipStatusSelect = document.getElementById('relationship_status');
 
             let currentStep = 0;
-            let totalProgressSteps = quizSteps.length - 2;
 
             function updateSkippedSteps() {
                 const status = relationshipStatusSelect.value;
@@ -899,50 +898,6 @@
                 updateProgressBar();
             }
             
-            function saveProgress() {
-                const data = {};
-                const formData = new FormData(form);
-                for (let [key, value] of formData.entries()) {
-                    if (key === 'core_values') {
-                        if (!data[key]) data[key] = [];
-                        data[key].push(value);
-                    } else {
-                        data[key] = value;
-                    }
-                }
-                const progress = {
-                    step: currentStep,
-                    answers: data
-                };
-                localStorage.setItem('coachingIntakeProgress', JSON.stringify(progress));
-            }
-
-            function loadProgress() {
-                const savedProgress = localStorage.getItem('coachingIntakeProgress');
-                if (savedProgress) {
-                    const progress = JSON.parse(savedProgress);
-                    const answers = progress.answers;
-                    for (const key in answers) {
-                        const elements = form.elements[key];
-                        if (elements) {
-                            if (key === 'core_values') {
-                                answers[key].forEach(value => {
-                                    const checkbox = form.querySelector(`input[name="core_values"][value="${value}"]`);
-                                    if (checkbox) checkbox.checked = true;
-                                });
-                            } else if (elements.type === 'radio') {
-                                const radio = form.querySelector(`input[name="${key}"][value="${answers[key]}"]`);
-                                if (radio) radio.checked = true;
-                            } else {
-                                elements.value = answers[key];
-                            }
-                        }
-                    }
-                    currentStep = progress.step || 0;
-                    updateSkippedSteps(); // Apply conditional logic based on loaded data
-                }
-            }
-
             function updateProgressBar() {
                 const visibleSteps = Array.from(quizSteps).filter(step => !step.dataset.skip);
                 const currentVisibleIndex = visibleSteps.indexOf(quizSteps[currentStep]);
@@ -980,7 +935,6 @@
                     if (nextStep < quizSteps.length) {
                         currentStep = nextStep;
                         showStep(currentStep);
-                        saveProgress();
                     }
                 });
             });
@@ -994,7 +948,6 @@
                     if (prevStep >= 0) {
                         currentStep = prevStep;
                         showStep(currentStep);
-                        saveProgress();
                     }
                 });
             });
@@ -1070,32 +1023,55 @@
                     const errorDiv = document.getElementById('submit-error');
                     if(errorDiv) errorDiv.style.display = 'none';
 
+                    // FIXED: Collect ALL form data properly
                     const formData = new FormData(form);
                     const data = {};
                     
-                    for (let [key, value] of formData.entries()) {
-                        if (!value) continue;
-                        if (key === 'core_values') {
-                            if (!data[key]) data[key] = [];
-                            data[key].push(value);
-                            continue;
+                    // Get all form elements including dynamically generated ones
+                    const allInputs = form.querySelectorAll('input, textarea, select');
+                    
+                    allInputs.forEach(element => {
+                        const name = element.name;
+                        const value = element.value;
+                        
+                        // Skip empty values and elements without names
+                        if (!name || !value.trim()) return;
+                        
+                        // Handle different input types
+                        if (element.type === 'radio' || element.type === 'checkbox') {
+                            if (!element.checked) return;
                         }
-                        if (key.startsWith('value_rank_')) {
+                        
+                        // Handle core values (checkboxes that can have multiple selections)
+                        if (name === 'core_values') {
+                            if (!data[name]) data[name] = [];
+                            data[name].push(value);
+                            return;
+                        }
+                        
+                        // Handle value rankings
+                        if (name.startsWith('value_rank_')) {
                             if (!data.value_rankings) data.value_rankings = {};
-                            const valueName = key.replace('value_rank_', '').replace(/_/g, ' ');
+                            const valueName = name.replace('value_rank_', '').replace(/_/g, ' ');
                             data.value_rankings[valueName] = value;
-                            continue;
+                            return;
                         }
-                        if (key.startsWith('goal_')) {
+                        
+                        // Handle five year goals
+                        if (name.startsWith('goal_')) {
                             if (!data.five_year_goals) data.five_year_goals = {};
-                            const parts = key.split('_');
+                            const parts = name.split('_');
                             const category = parts.slice(1, -1).join('_').replace(/_/g, ' ');
                             if (!data.five_year_goals[category]) data.five_year_goals[category] = [];
                             data.five_year_goals[category].push(value);
-                            continue;
+                            return;
                         }
-                        data[key] = value;
-                    }
+                        
+                        // Handle all other fields
+                        data[name] = value;
+                    });
+                    
+                    console.log('Submitting data:', data); // Debug log
                     
                     const webhookUrl = 'https://n8n.edw4rds.com/webhook/303bd3a2-917e-4552-a621-aa6e84f9c62b';
 
@@ -1106,11 +1082,8 @@
                     })
                     .then(response => {
                         if (!response.ok) {
-                            // If the server responds with an error status, handle it here
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                        // If the response is ok, we can proceed
-                        localStorage.removeItem('coachingIntakeProgress');
                         let nextStep = currentStep + 1;
                         while(nextStep < quizSteps.length && quizSteps[nextStep].dataset.skip === 'true') {
                             nextStep++;
@@ -1132,7 +1105,6 @@
                 });
             }
 
-            loadProgress();
             showStep(currentStep);
         });
     </script>
