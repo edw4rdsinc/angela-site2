@@ -269,7 +269,6 @@
                 // 'no-cors' mode sends the request without waiting for a response, which is fine for webhooks and avoids CORS issues.
                 await fetch(N8N_WEBHOOK_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userAnswers),
                 });
