@@ -898,12 +898,10 @@
                 quizSteps.forEach((step, index) => step.classList.toggle('active', index === stepIndex));
                 updateProgressBar();
                 
-                // --- NEW --- Auto-focus on the first input of the new step
                 const activeStep = quizSteps[stepIndex];
                 if (activeStep) {
                     const firstInput = activeStep.querySelector('input[type="text"], input[type="email"], input[type="tel"], input[type="date"], textarea, select');
                     if (firstInput) {
-                        // Use a brief timeout to ensure the element is focusable after the animation
                         setTimeout(() => {
                             firstInput.focus();
                         }, 10);
@@ -1142,7 +1140,6 @@
                         }
                     })
                     .catch(error => {
-                        console.error('Submission error:', error);
                         if(errorDiv) {
                            errorDiv.textContent = 'There was a network error. Please try again.';
                            errorDiv.style.display = 'block';
