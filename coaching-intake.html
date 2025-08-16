@@ -622,7 +622,7 @@
                 </div>
                 <div class="navigation-buttons">
                     <button type="button" class="nav-btn back-btn">Back</button>
-                    <button type="button" class="nav-btn next-btn" id="values-next-btn">OK</button>
+                    <button type="button" class="nav-btn" id="values-next-btn">OK</button>
                 </div>
             </div>
             
@@ -897,6 +897,18 @@
             function showStep(stepIndex) {
                 quizSteps.forEach((step, index) => step.classList.toggle('active', index === stepIndex));
                 updateProgressBar();
+                
+                // --- NEW --- Auto-focus on the first input of the new step
+                const activeStep = quizSteps[stepIndex];
+                if (activeStep) {
+                    const firstInput = activeStep.querySelector('input[type="text"], input[type="email"], input[type="tel"], input[type="date"], textarea, select');
+                    if (firstInput) {
+                        // Use a brief timeout to ensure the element is focusable after the animation
+                        setTimeout(() => {
+                            firstInput.focus();
+                        }, 10);
+                    }
+                }
             }
             
             function saveProgress() {
@@ -1041,24 +1053,35 @@
                     });
                 });
                 
-                valuesNextBtn.addEventListener('click', (e) => {
+                valuesNextBtn.addEventListener('click', () => {
                      const checkedCheckboxes = document.querySelectorAll('input[name="core_values"]:checked');
-                     if (checkedCheckboxes.length !== 0 && checkedCheckboxes.length !== 10) {
-                         e.stopPropagation();
+                     if (checkedCheckboxes.length !== 10) {
                          valuesError.style.display = 'block';
-                     } else {
-                         valuesError.style.display = 'none';
-                         let rankingHtml = '';
-                         checkedCheckboxes.forEach(box => {
-                             const valueName = box.value;
-                             const inputName = `value_rank_${valueName.replace(/\s/g, '_')}`;
-                             rankingHtml += `
-                                <div class="value-ranking-item">
-                                    <label for="${inputName}">${valueName}</label>
-                                    <input type="text" id="${inputName}" name="${inputName}" placeholder="Enter rank and how it shows up..." aria-label="Rank for ${valueName}">
-                                </div>`;
-                         });
-                         valuesRankingContainer.innerHTML = rankingHtml;
+                         return; 
+                     } 
+                     
+                     valuesError.style.display = 'none';
+                     
+                     let rankingHtml = '';
+                     checkedCheckboxes.forEach(box => {
+                         const valueName = box.value;
+                         const inputName = `value_rank_${valueName.replace(/\s/g, '_')}`;
+                         rankingHtml += `
+                             <div class="value-ranking-item">
+                                 <label for="${inputName}">${valueName}</label>
+                                 <input type="text" id="${inputName}" name="${inputName}" placeholder="Enter rank and how it shows up..." aria-label="Rank for ${valueName}">
+                             </div>`;
+                     });
+                     valuesRankingContainer.innerHTML = rankingHtml;
+                     
+                     let nextStep = currentStep + 1;
+                     while(nextStep < quizSteps.length && quizSteps[nextStep].dataset.skip === 'true') {
+                         nextStep++;
+                     }
+                     if (nextStep < quizSteps.length) {
+                         currentStep = nextStep;
+                         showStep(currentStep);
+                         saveProgress();
                      }
                 });
             }
