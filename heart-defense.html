@@ -172,7 +172,14 @@
                 key: 'name',
                 title: "What's your full name?",
                 placeholder: "Type your answer here...",
-                required: true 
+                required: true
+            },
+            {
+                type: 'select',
+                key: 'gender',
+                title: "What is your gender?",
+                options: ["Woman", "Man"],
+                required: true
             },
             {
                 type: 'text',
@@ -242,7 +249,10 @@
                 title: "Thank you!",
                 description: "You're all set. Please click the button below to schedule your appointment.",
                 buttonText: "Schedule Now",
-                calendlyLink: "https://book.nylas.com/us/85ae275c-192a-494f-82ab-41b416a07f94/angela-1on1"
+                calendlyLinks: {
+                    "Woman": "https://book.nylas.com/us/85ae275c-192a-494f-82ab-41b416a07f94/angela-1on1",
+                    "Man": "https://book.nylas.com/us/85ae275c-192a-494f-82ab-41b416a07f94/sam-elev4te"
+                }
             }
         ];
 
@@ -323,7 +333,7 @@
                         content = `
                             ${titleHtml}
                             ${descriptionHtml}
-                            <a id="schedule-btn" href="${q.calendlyLink}" target="_blank" class="block w-full text-center mt-8 btn btn-primary text-lg">
+                            <a id="schedule-btn" href="#" target="_blank" class="block w-full text-center mt-8 btn btn-primary text-lg">
                                 ${q.buttonText}
                             </a>
                         `;
@@ -357,7 +367,11 @@
             const scheduleBtn = document.getElementById('schedule-btn');
             const name = userAnswers.name || '';
             const email = userAnswers.email || '';
-            const calendlyUrl = new URL(finalQuestionConfig.calendlyLink);
+            const gender = userAnswers.gender || 'Woman';
+
+            // Select the correct link based on gender
+            const baseLink = finalQuestionConfig.calendlyLinks[gender];
+            const calendlyUrl = new URL(baseLink);
             if (name) calendlyUrl.searchParams.set('name', name);
             if (email) calendlyUrl.searchParams.set('email', email);
             scheduleBtn.href = calendlyUrl.toString();
